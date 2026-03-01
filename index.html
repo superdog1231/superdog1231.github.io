@@ -345,7 +345,6 @@
 
     <input type="text" id="chipInput" placeholder="請輸入晶片號碼" class="mt-2 w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
 </div>
-            </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
@@ -525,7 +524,57 @@
 <textarea id="petNote" rows="3" placeholder="美容需求與其他備註" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold resize-none"></textarea>
         </div>
     </section>
+<!-- 支付資訊 -->
+<section class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
+    <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="wallet" class="w-5 h-5 text-sd-mint"></i>
+        <h2 class="text-lg font-black text-sd-text">支付資訊</h2>
+    </div>
 
+    <div class="space-y-4">
+        <div>
+            <label class="block text-sm font-bold text-sd-sub mb-2">支付方式 <span class="text-sd-peach">*</span></label>
+
+            <div class="grid grid-cols-2 gap-3 mb-2">
+                <label class="cursor-pointer">
+                    <input type="radio" name="paymentMethod" value="cash" class="peer sr-only">
+                    <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                        現金
+                    </div>
+                </label>
+
+                <label class="cursor-pointer">
+                    <input type="radio" name="paymentMethod" value="linepay" class="peer sr-only">
+                    <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                        LINE Pay
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex gap-2">
+                <label class="cursor-pointer shrink-0">
+                    <input type="radio" name="paymentMethod" value="other" class="peer sr-only">
+                    <div class="px-4 py-3 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                        其他
+                    </div>
+                </label>
+                <input type="text" id="paymentOtherText" placeholder="請輸入其他支付方式" class="flex-1 px-4 py-3 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-bold text-sd-sub mb-2">支付金額 <span class="text-sd-peach">*</span></label>
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sd-sub font-black">$NT</span>
+                <input type="number" id="paymentAmount" min="0" placeholder="輸入金額" class="w-full pl-14 pr-12 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg text-sd-text font-black focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sd-sub font-black">元</span>
+            </div>
+            <p class="text-xs text-sd-peach font-bold mt-2">
+                此金額為基礎報價，若現場發現嚴重打結、寄生蟲等狀況，將另行告知加價。
+            </p>
+        </div>
+    </div>
+</section>
 <!-- 乙方資訊 -->
 <section class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
     <div class="flex items-center gap-2 mb-4">
@@ -942,14 +991,7 @@ function initFormEnhancements() {
     const otherServiceCheck = document.getElementById('otherServiceCheck');
     const otherServiceWrap = document.getElementById('otherServiceWrap');
     const otherServiceText = document.getElementById('otherServiceText');
-// 晶片欄位邏輯（按鈕式三選一）
-const chipRadios = document.querySelectorAll('input[name="chipStatus"]');
-if (chipRadios.length) {
-    chipRadios.forEach(radio => {
-        radio.addEventListener('change', toggleChipInput);
-    });
-    toggleChipInput();
-}
+
     if (otherServiceCheck && otherServiceWrap && otherServiceText) {
         const syncOtherService = () => {
             if (otherServiceCheck.checked) {
@@ -961,6 +1003,36 @@ if (chipRadios.length) {
         };
         otherServiceCheck.addEventListener('change', syncOtherService);
         syncOtherService();
+    }
+
+    // 晶片欄位邏輯（按鈕式三選一）
+    const chipRadios = document.querySelectorAll('input[name="chipStatus"]');
+    if (chipRadios.length) {
+        chipRadios.forEach(radio => {
+            radio.addEventListener('change', toggleChipInput);
+        });
+        toggleChipInput();
+    }
+
+    // 支付方式：只有選「其他」才開啟輸入框
+    const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    const paymentOtherText = document.getElementById('paymentOtherText');
+
+    if (paymentRadios.length && paymentOtherText) {
+        const syncPaymentOther = () => {
+            const checked = document.querySelector('input[name="paymentMethod"]:checked');
+            if (checked && checked.value === 'other') {
+                paymentOtherText.disabled = false;
+                paymentOtherText.placeholder = '請輸入其他支付方式';
+            } else {
+                paymentOtherText.value = '';
+                paymentOtherText.disabled = true;
+                paymentOtherText.placeholder = '選擇「其他」後可輸入';
+            }
+        };
+
+        paymentRadios.forEach(radio => radio.addEventListener('change', syncPaymentOther));
+        syncPaymentOther();
     }
 
     // 過往病史輸入框控制
