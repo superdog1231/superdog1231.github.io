@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Superdog | 後台管理</title>
+
+<link rel="icon" href="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" type="image/png" />
+<link rel="apple-touch-icon" href="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" />
+<meta name="theme-color" content="#F5FFFD" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sd: {
+              bg: '#F5FFFD',
+              mint: '#0F8F8A',
+              mintDeep: '#0B6D69',
+              yellow: '#F3B53F',
+              peach: '#FF8C7A',
+              pink: '#FF7FA8',
+              text: '#24413E',
+              sub: '#6D8B88',
+              card: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            cute: ['"Zen Maru Gothic"', 'sans-serif']
+          },
+          boxShadow: {
+            jelly: '0 12px 30px rgba(15,143,138,.15)',
+            soft: '0 6px 16px rgba(36,65,62,.06)'
+          },
+          borderRadius: {
+            cute: '1.4rem'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html, body {
+      background: #F5FFFD;
+      font-family: "Zen Maru Gothic", sans-serif;
+      color: #24413E;
+      -webkit-font-smoothing: antialiased;
+    }
+    .bg-paw {
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(15,143,138,.06) 0 10px, transparent 11px),
+        radial-gradient(circle at 88% 82%, rgba(243,181,63,.14) 0 12px, transparent 13px);
+      background-attachment: fixed;
+    }
+    .btn-jelly { transition: .2s ease; cursor: pointer; }
+    .btn-jelly:hover { transform: translateY(-2px); }
+    .btn-jelly:active { transform: scale(.97); }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15,143,138,.05); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #0F8F8A; border-radius: 10px; }
+    .badge { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 900; }
+    .b-pending { background:#FEF3C7; color:#B45309; }
+    .b-confirmed { background:#D1FAE5; color:#047857; }
+    .b-completed { background:#E5E7EB; color:#374151; }
+    .b-cancelled { background:#FEE2E2; color:#B91C1C; }
+  </style>
+</head>
+
+<body class="bg-paw min-h-screen">
+  <!-- Top Bar -->
+<header id="topBar" class="sticky top-0 z-40 bg-sd-bg/90 backdrop-blur border-b border-sd-mint/10 shadow-soft">    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="./index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
+          <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
+        </div>
+        <div class="leading-tight">
+          <p class="font-black text-sd-mint text-lg">Super Dog</p>
+          <p class="text-[11px] tracking-[0.2em] text-sd-sub font-bold">後台管理</p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <button id="btnSignOut" class="btn-jelly px-3 py-2 bg-white border border-sd-mint/20 text-sd-mint rounded-xl text-xs font-black hidden">
+          登出
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 pb-24 space-y-5 min-h-[calc(100vh-4rem)] flex flex-col">
+    <div id="viewLoading" class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft text-center">
+      <p class="font-black text-sd-mint">載入中...</p>
+      <p class="text-xs text-sd-sub font-bold mt-2">若超過 10 秒仍停住，請重新整理。</p>
+    </div>
+
+<!-- Login (Centered Card) -->
+<section id="viewLogin" class="hidden flex-1 flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <div class="rounded-[2rem] bg-white border border-sd-mint/15 shadow-jelly px-7 py-8 text-center">
+      <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-white border-2 border-sd-mint/20 shadow-soft flex items-center justify-center">
+        <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png"
+             alt="Super Dog Logo" class="w-full h-full object-contain p-2">
+      </div>
+
+      <div class="font-black text-sd-text text-xl">Super Dog 後台管理</div>
+
+      <!-- Step 1 -->
+      <div id="loginStepPick" class="mt-6">
+        <div class="space-y-3">
+          <button id="btnPickManager" class="btn-jelly w-full bg-white border border-sd-mint/20 text-sd-mint py-4 rounded-2xl font-black flex items-center justify-center gap-2">
+            <i data-lucide="shield" class="w-5 h-5"></i> 店長登入
+          </button>
+          <button id="btnPickStaff" class="btn-jelly w-full bg-white border border-sd-mint/20 text-sd-text py-4 rounded-2xl font-black flex items-center justify-center gap-2">
+            <i data-lucide="user" class="w-5 h-5"></i> 員工登入
+          </button>
+        </div>
+
+        <a href="./index.html"
+           class="btn-jelly mt-6 w-full inline-flex items-center justify-center gap-2 text-sm font-black text-sd-sub">
+          <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sd-bg border border-sd-mint/10">←</span>
+          返回填寫頁面
+        </a>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="loginStepPwd" class="hidden mt-6">
+        <div class="flex justify-center mb-3">
+          <span id="loginRolePill" class="px-5 py-2 rounded-full bg-sd-mint/10 text-sd-mint font-black text-sm"></span>
+        </div>
+
+        <div class="mt-3">
+          <input id="loginPassword" type="password"
+                 class="w-full px-4 py-4 rounded-2xl border border-sd-mint/20 bg-white outline-none font-black text-center tracking-widest"
+                 placeholder="請輸入密碼">
+        </div>
+
+        <button id="btnLogin" class="btn-jelly mt-4 w-full bg-[#3D3D3D] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2">
+          <i data-lucide="log-in" class="w-5 h-5"></i> 確認登入
+        </button>
+
+        <p id="loginError" class="hidden text-center text-xs font-black text-sd-peach mt-3"></p>
+
+        <button id="btnSwitchRole" type="button"
+                class="btn-jelly mt-5 w-full py-3 rounded-2xl bg-sd-bg border border-sd-mint/10 text-sd-sub font-black text-sm">
+          ← 切換身分
+        </button>
+
+        <a href="./index.html" class="block mt-4 text-xs font-black text-sd-sub underline">
+          返回填寫頁面
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard (Soosi-like Home) -->
+<section id="viewApp" class="hidden space-y-6">
+  <!-- Home Header (No big white card) -->
+  <div class="space-y-3">
+    <!-- Search -->
+    <div class="relative">
+      <i data-lucide="search" class="w-4 h-4 text-sd-sub absolute left-4 top-1/2 -translate-y-1/2"></i>
+      <input id="searchInput" type="text"
+        class="w-full pl-11 pr-4 py-4 rounded-2xl border border-sd-mint/15 bg-white/70 backdrop-blur outline-none font-bold text-sd-text"
+        placeholder="搜尋：飼主姓名、電話、毛孩名字">
+    </div>
+
+    <!-- Tabs (no wrapper card) -->
+    <div class="grid grid-cols-2 gap-2">
+      <button id="tabRecords"
+        class="btn-jelly py-3 rounded-2xl font-black text-sm bg-sd-mint text-white border border-sd-mint flex items-center justify-center gap-2">
+        <i data-lucide="scissors" class="w-4 h-4"></i> 洗澡美容
+      </button>
+
+      <button id="tabCustomers"
+        class="btn-jelly py-3 rounded-2xl font-black text-sm bg-white/70 backdrop-blur text-sd-mint border border-sd-mint/20 flex items-center justify-center gap-2">
+        <i data-lucide="users" class="w-4 h-4"></i> 顧客管理
+      </button>
+    </div>
+
+    <!-- Filters row (no wrapper card) -->
+    <div class="flex items-center justify-between gap-3">
+      <div class="text-xs font-black text-sd-sub">
+        目前顯示：<span id="filterText" class="text-sd-text">只看未完成</span>
+      </div>
+
+      <input id="chkIncomplete" type="checkbox" class="hidden" checked>
+
+      <button id="btnToggleIncomplete"
+        class="btn-jelly px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-sd-mint/20 text-sd-mint font-black text-xs">
+        切換顯示全部
+      </button>
+    </div>
+  </div>
+
+  <!-- Records panel (no big white background) -->
+  <div id="recordsPanel" class="space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="list" class="w-5 h-5 text-sd-mint"></i>
+        <h2 class="text-lg font-black text-sd-text">美容服務紀錄</h2>
+      </div>
+
+      <button id="btnRefresh"
+        class="btn-jelly px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-sd-mint/20 text-sd-mint font-black text-xs flex items-center gap-2">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i> 重新整理
+      </button>
+    </div>
+
+    <div id="recordsStats" class="text-xs font-black text-sd-sub"></div>
+
+    <div id="recordsList" class="space-y-4 max-h-[68vh] overflow-y-auto custom-scrollbar pr-2"></div>
+
+    <div id="recordsEmpty" class="hidden text-center py-12">
+      <div class="w-14 h-14 rounded-full bg-white/70 backdrop-blur border border-sd-mint/10 flex items-center justify-center mx-auto mb-3 text-sd-sub">
+        <i data-lucide="inbox" class="w-7 h-7"></i>
+      </div>
+      <p class="font-black text-sd-sub">沒有符合條件的紀錄</p>
+    </div>
+  </div>
+  <!-- Customers panel (no big white background) -->
+  <div id="customersPanel" class="hidden space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="users" class="w-5 h-5 text-sd-mint"></i>
+        <h2 class="text-lg font-black text-sd-text">顧客管理（依電話分組）</h2>
+      </div>
+    </div>
+
+    <div id="customersList" class="space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar pr-2"></div>
+
+    <div id="customersEmpty" class="hidden text-center py-12">
+      <div class="w-14 h-14 rounded-full bg-white/70 backdrop-blur border border-sd-mint/10 flex items-center justify-center mx-auto mb-3 text-sd-sub">
+        <i data-lucide="inbox" class="w-7 h-7"></i>
+      </div>
+      <p class="font-black text-sd-sub">尚無資料</p>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <!-- Customer Detail Modal -->
+<div id="customerModal" class="fixed inset-0 z-[95] hidden">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="customerModalBackdrop"></div>
+
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="w-full max-w-3xl bg-white rounded-cute shadow-jelly border border-sd-mint/20 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between">
+        <div class="min-w-0">
+          <div class="text-xs font-black text-sd-sub">顧客明細</div>
+          <div id="customerModalTitle" class="font-black text-sd-text truncate"></div>
+          <div id="customerModalSub" class="text-xs font-bold text-sd-sub mt-1 truncate"></div>
+        </div>
+
+        <button id="btnCloseCustomerModal" class="btn-jelly w-10 h-10 rounded-full bg-white border border-sd-mint/15 flex items-center justify-center text-sd-sub">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
+        <div class="rounded-2xl border border-sd-mint/10 bg-white p-4">
+          <div id="customerModalStats" class="grid sm:grid-cols-3 gap-3 text-sm font-black text-sd-text"></div>
+          <div id="customerModalPets" class="text-xs font-bold text-sd-sub mt-3"></div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="font-black text-sd-text">過往紀錄</div>
+          <button id="btnCustomerShowAll" class="btn-jelly px-4 py-2 rounded-full bg-sd-mint/10 text-sd-mint font-black text-xs border border-sd-mint/15">
+            顯示全部狀態
+          </button>
+        </div>
+
+        <div id="customerModalList" class="space-y-3"></div>
+
+        <div id="customerModalEmpty" class="hidden text-center py-10 text-sd-sub font-black">
+          查無紀錄
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-3xl bg-white rounded-cute shadow-jelly border border-sd-mint/20 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between">
+          <div>
+            <div class="text-xs font-black text-sd-sub">服務紀錄詳情</div>
+            <div id="detailTitle" class="font-black text-sd-text"></div>
+          </div>
+          <button id="btnCloseDetail" class="btn-jelly w-10 h-10 rounded-full bg-white border border-sd-mint/15 flex items-center justify-center text-sd-sub">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="p-5 overflow-y-auto custom-scrollbar space-y-5">
+          <!-- status -->
+          <div class="rounded-2xl border border-sd-mint/10 bg-sd-bg p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black text-sd-sub">狀態：</span>
+                <span id="detailStatusBadge" class="badge b-pending">pending</span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="pending">待處理</button>
+                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="confirmed">已確認</button>
+                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="completed">已完成</button>
+                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="cancelled">已取消</button>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <label class="block text-xs font-black text-sd-sub mb-1">店內備註（內部用）</label>
+              <textarea id="detailNote" rows="2" class="w-full px-3 py-2 rounded-xl border border-sd-mint/15 bg-white outline-none font-bold text-sm" placeholder="例如：需要加強安撫、下次提醒事項..."></textarea>
+              <div class="text-[10px] text-sd-sub font-bold mt-1">離開輸入框會自動儲存</div>
+            </div>
+          </div>
+
+          <!-- owner/pet -->
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-sd-mint/10 p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="user" class="w-4 h-4 text-sd-mint"></i>
+                <h3 class="font-black text-sd-text">飼主</h3>
+              </div>
+              <div id="detailOwner" class="text-sm font-bold text-sd-text space-y-1"></div>
+            </div>
+
+            <div class="rounded-2xl border border-sd-mint/10 p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="paw-print" class="w-4 h-4 text-sd-mint"></i>
+                <h3 class="font-black text-sd-text">毛孩</h3>
+              </div>
+              <div id="detailPet" class="text-sm font-bold text-sd-text space-y-1"></div>
+            </div>
+          </div>
+
+          <!-- service/payment -->
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-sd-mint/10 p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="scissors" class="w-4 h-4 text-sd-mint"></i>
+                <h3 class="font-black text-sd-text">本次服務</h3>
+              </div>
+              <div id="detailService" class="text-sm font-bold text-sd-text space-y-1"></div>
+            </div>
+
+            <div class="rounded-2xl border border-sd-mint/10 p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <i data-lucide="wallet" class="w-4 h-4 text-sd-mint"></i>
+                <h3 class="font-black text-sd-text">付款資訊</h3>
+              </div>
+              <div id="detailPayment" class="text-sm font-bold text-sd-text space-y-1"></div>
+            </div>
+          </div>
+
+          <!-- signature -->
+          <div class="rounded-2xl border border-sd-mint/10 p-4">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
+                <h3 class="font-black text-sd-text">簽名</h3>
+              </div>
+            </div>
+            <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
+              <img id="detailSignatureImg" src="" alt="signature" class="max-h-[140px] object-contain" />
+            </div>
+          </div>
+
+          <!-- actions -->
+          <div class="grid sm:grid-cols-3 gap-3">
+            <button id="btnCopyLine" class="btn-jelly w-full bg-sd-mint text-white py-3 rounded-xl font-black flex items-center justify-center gap-2">
+              <i data-lucide="copy" class="w-4 h-4"></i> 複製 LINE 完工通知
+            </button>
+            <button id="btnDelete" class="btn-jelly w-full bg-white border border-sd-peach/40 text-sd-peach py-3 rounded-xl font-black flex items-center justify-center gap-2 hidden">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> 刪除
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Confirm Modal (re-auth) -->
+  <div id="authModal" class="fixed inset-0 z-[120] hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-sm rounded-cute shadow-jelly border border-sd-mint/20 p-6">
+        <div class="text-center mb-4">
+          <div class="w-12 h-12 rounded-full bg-sd-peach/15 text-sd-peach flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="lock" class="w-6 h-6"></i>
+          </div>
+          <div class="font-black text-sd-text">敏感操作驗證</div>
+          <div class="text-xs font-bold text-sd-sub mt-1">請輸入目前登入帳號的密碼</div>
+        </div>
+
+        <input id="authPassword" type="password" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg outline-none font-bold text-center tracking-widest" placeholder="••••••">
+        <p id="authError" class="hidden text-center text-xs font-black text-sd-peach mt-2"></p>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button id="btnAuthCancel" class="btn-jelly py-3 rounded-xl bg-gray-100 text-gray-500 font-black">取消</button>
+          <button id="btnAuthConfirm" class="btn-jelly py-3 rounded-xl bg-sd-mint text-white font-black">確認</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // Supabase Config (Superdog)
+    // =========================
+    const SUPABASE_URL = "https://ncrkevxnmplvivletkts.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcmtldnhubXBsdml2bGV0a3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODIzMzUsImV4cCI6MjA4ODk1ODMzNX0.BgThp2Wy5LEQo-Evdx-A_XzuA3uGipTRRO4C4YlCTpI";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Accounts
+    const MANAGER_EMAIL = "supesdog1231@gmail.com";
+    const STAFF_EMAIL = "supesdog1231@staff.com";
+    const ALLOWED_EMAILS = [MANAGER_EMAIL, STAFF_EMAIL];
+
+    // State
+    let currentUser = null;
+    let selectedLoginEmail = ""; // manager/staff 選完後帶入，畫面不顯示
+    let currentRole = "staff"; // 'manager' | 'staff'
+    let records = [];
+    let selectedRecord = null;
+    let pendingSensitiveAction = null; // function
+
+    // Helpers
+    const $ = (id) => document.getElementById(id);
+
+    function toast(msg) { alert(msg); }
+function syncFilterUI() {
+  const chk = $("chkIncomplete");
+  const txt = $("filterText");
+  const btn = $("btnToggleIncomplete");
+  if (!chk || !txt || !btn) return;
+
+  const onlyIncomplete = chk.checked;
+  txt.textContent = onlyIncomplete ? "只看未完成" : "顯示全部";
+  btn.textContent = onlyIncomplete ? "切換顯示全部" : "切換只看未完成";
+}
+    function normalizePayload(p) {
+      if (!p) return {};
+      if (typeof p === "string") {
+        try { return JSON.parse(p); } catch { return {}; }
+      }
+      return p;
+    }
+
+    function fmtDateTime(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      return d.toLocaleString("zh-TW", { hour12: false });
+    }
+
+    function badgeClass(status) {
+      if (status === "confirmed") return "badge b-confirmed";
+      if (status === "completed") return "badge b-completed";
+      if (status === "cancelled") return "badge b-cancelled";
+      return "badge b-pending";
+    }
+
+    function badgeText(status) {
+      if (status === "confirmed") return "已確認";
+      if (status === "completed") return "已完成";
+      if (status === "cancelled") return "已取消";
+      return "待處理";
+    }
+
+    function TServiceItem(v) {
+      const map = {
+        "基礎洗澡": "基礎洗澡",
+        "精緻美容": "精緻美容",
+        "局部修剪": "局部修剪",
+        "其他項目": "其他項目"
+      };
+      return map[v] || v;
+    }
+
+    function getPaymentAmount(payload) {
+      const v = payload?.payment_amount;
+      const n = parseInt(v || 0);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function isIncompleteStatus(status) {
+      return !["completed", "cancelled"].includes(status || "pending");
+    }
+
+    // =========================
+    // Auth
+    // =========================
+    async function ensureSession() {
+      const { data } = await sb.auth.getSession();
+      return data?.session || null;
+    }
+
+    async function loadUserAndGuard() {
+      const { data, error } = await sb.auth.getUser();
+      if (error) return null;
+      const user = data?.user || null;
+      if (!user) return null;
+
+      const email = (user.email || "").toLowerCase();
+      if (!ALLOWED_EMAILS.includes(email)) {
+        await sb.auth.signOut();
+        toast("此帳號無權限使用後台");
+        return null;
+      }
+
+      currentUser = user;
+      currentRole = (email === MANAGER_EMAIL) ? "manager" : "staff";
+const emailEl = $("userEmailText");
+if (emailEl) emailEl.textContent = email;
+
+const roleEl = $("userRoleText");
+if (roleEl) roleEl.textContent = currentRole === "manager" ? "店長" : "員工";      $("btnSignOut").classList.remove("hidden");
+
+      return user;
+    }
+
+    async function login(email, password) {
+      $("loginError").classList.add("hidden");
+      $("btnLogin").disabled = true;
+      $("btnLogin").classList.add("opacity-60");
+      $("btnLogin").innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 登入中...`;
+      lucide.createIcons();
+
+      try {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await bootApp();
+      } catch (e) {
+        $("loginError").textContent = "登入失敗：帳號或密碼錯誤";
+        $("loginError").classList.remove("hidden");
+      } finally {
+        $("btnLogin").disabled = false;
+        $("btnLogin").classList.remove("opacity-60");
+        $("btnLogin").innerHTML = `<i data-lucide="log-in" class="w-5 h-5"></i> 確認登入`;
+        lucide.createIcons();
+      }
+    }
+
+    async function signOut() {
+      await sb.auth.signOut();
+      location.reload();
+    }
+
+
+    // =========================
+    // Data
+    // =========================
+    async function fetchRecords() {
+      // 最新 300 筆
+      const { data, error } = await sb
+        .from("grooming_agreements")
+        .select("id, created_at, updated_at, phone, pet_name, signature_url, payload, status, admin_note")
+        .order("created_at", { ascending: false })
+        .limit(300);
+
+      if (error) throw error;
+      records = (data || []).map(r => ({ ...r, payload: normalizePayload(r.payload) }));
+    }
+
+    function renderStats(list) {
+      const total = list.length;
+      const pending = list.filter(x => (x.status || "pending") === "pending").length;
+      const confirmed = list.filter(x => x.status === "confirmed").length;
+      const completed = list.filter(x => x.status === "completed").length;
+      const cancelled = list.filter(x => x.status === "cancelled").length;
+
+      $("recordsStats").innerHTML =
+        `<span class="font-black text-sd-text">${total}</span> 筆｜` +
+        `待處理 <span class="text-[#B45309]">${pending}</span>、` +
+        `已確認 <span class="text-[#047857]">${confirmed}</span>、` +
+        `已完成 <span class="text-gray-600">${completed}</span>、` +
+        `已取消 <span class="text-[#B91C1C]">${cancelled}</span>`;
+    }
+
+    function applyFilters() {
+      const q = ($("searchInput").value || "").trim();
+      const onlyIncomplete = $("chkIncomplete").checked;
+
+      const filtered = records.filter(r => {
+        const payload = r.payload || {};
+        const ownerName = (payload.owner_name || "").toString();
+        const phone = (r.phone || payload.phone || "").toString();
+        const pet = (r.pet_name || payload.pet_name || "").toString();
+        const status = r.status || "pending";
+
+        const matchQ = !q || ownerName.includes(q) || phone.includes(q) || pet.includes(q);
+        const matchStatus = onlyIncomplete ? isIncompleteStatus(status) : true;
+        return matchQ && matchStatus;
+      });
+
+      return filtered;
+    }
+
+    function renderRecords() {
+      const list = applyFilters();
+      renderStats(list);
+
+      const container = $("recordsList");
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        $("recordsEmpty").classList.remove("hidden");
+        return;
+      }
+      $("recordsEmpty").classList.add("hidden");
+
+      list.forEach(r => {
+        const payload = r.payload || {};
+        const ownerName = payload.owner_name || "-";
+        const petType = payload.pet_type === "cat" ? "貓咪" : "狗狗";
+        const items = Array.isArray(payload.service_items) ? payload.service_items : [];
+        const itemsText = items.length ? items.map(TServiceItem).join("、") : "-";
+        const pay = getPaymentAmount(payload);
+
+        const div = document.createElement("div");
+const status = r.status || "pending";
+const strip =
+  status === "confirmed" ? "bg-emerald-400"
+: status === "completed" ? "bg-gray-300"
+: status === "cancelled" ? "bg-rose-300"
+: "bg-amber-300";
+
+div.className = "relative overflow-hidden rounded-[1.6rem] border border-sd-mint/10 bg-white/80 backdrop-blur shadow-soft hover:border-sd-mint transition cursor-pointer";
+div.innerHTML = `
+  <div class="absolute left-0 top-0 bottom-0 w-2 ${strip}"></div>
+
+  <div class="p-5 pl-6">
+    <div class="flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <div class="text-[11px] font-black text-sd-sub tracking-widest mb-1">
+          ${fmtDateTime(r.created_at)}
+        </div>
+
+        <div class="text-xl font-black text-sd-text truncate">
+          ${r.pet_name || payload.pet_name || "-"}
+        </div>
+
+        <div class="mt-2 text-xs font-bold text-sd-sub flex flex-wrap gap-x-3 gap-y-1">
+          <span class="inline-flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i>${ownerName}</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5"></i>${r.phone || payload.phone || "-"}</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="paw-print" class="w-3.5 h-3.5"></i>${petType}</span>
+        </div>
+
+        <div class="mt-3 text-[12px] font-bold text-sd-sub">
+          ✂️ ${itemsText}
+        </div>
+      </div>
+
+      <div class="shrink-0 text-right">
+        <div class="font-black text-sd-text text-lg">$${pay}</div>
+        <div class="${badgeClass(status)} inline-block mt-2">${badgeText(status)}</div>
+      </div>
+    </div>
+  </div>
+`;
+        div.onclick = () => openDetail(r.id);
+        container.appendChild(div);
+      });
+
+      lucide.createIcons();
+    }
+
+    function groupCustomers() {
+      const q = ($("searchInput").value || "").trim();
+
+      const groups = {};
+      records.forEach(r => {
+        const p = r.payload || {};
+        const phone = (r.phone || p.phone || "").toString();
+        if (!phone) return;
+
+        const ownerName = (p.owner_name || "-").toString();
+        const petName = (r.pet_name || p.pet_name || "-").toString();
+        const amount = getPaymentAmount(p);
+
+        if (!groups[phone]) {
+          groups[phone] = {
+            phone,
+            ownerName,
+            pets: new Set(),
+            count: 0,
+            total: 0,
+            latest: r.created_at
+          };
+        }
+        groups[phone].pets.add(petName);
+        groups[phone].count += 1;
+        groups[phone].total += amount;
+        if (new Date(r.created_at) > new Date(groups[phone].latest)) groups[phone].latest = r.created_at;
+      });
+
+      let arr = Object.values(groups).sort((a,b) => new Date(b.latest) - new Date(a.latest));
+      if (q) {
+        arr = arr.filter(c => c.phone.includes(q) || c.ownerName.includes(q) || Array.from(c.pets).join(",").includes(q));
+      }
+      return arr;
+    }
+
+let selectedCustomerPhone = "";
+
+function normalizePhone(input) {
+  return String(input || "").replace(/[^\d]/g, "").trim();
+}
+
+function getRecordsByPhone(phone) {
+  const p = normalizePhone(phone);
+  return records
+    .filter(r => normalizePhone(r.phone || r?.payload?.phone) === p)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+}
+
+function openCustomerModal(phone) {
+  selectedCustomerPhone = normalizePhone(phone);
+  renderCustomerModal(selectedCustomerPhone);
+  openModal("customerModal");
+}
+
+function renderCustomerModal(phone) {
+  const list = getRecordsByPhone(phone);
+
+  const titleEl = $("customerModalTitle");
+  const subEl = $("customerModalSub");
+  const statsEl = $("customerModalStats");
+  const petsEl = $("customerModalPets");
+  const container = $("customerModalList");
+  const emptyEl = $("customerModalEmpty");
+
+  if (!container || !titleEl || !subEl || !statsEl || !petsEl || !emptyEl) return;
+
+  if (!list.length) {
+    titleEl.textContent = phone || "-";
+    subEl.textContent = "";
+    statsEl.innerHTML = "";
+    petsEl.textContent = "";
+    container.innerHTML = "";
+    emptyEl.classList.remove("hidden");
+    return;
+  }
+
+  emptyEl.classList.add("hidden");
+
+  const first = list[0];
+  const p0 = first.payload || {};
+  const ownerName = (p0.owner_name || "-").toString();
+
+  titleEl.textContent = ownerName;
+  subEl.textContent = `電話：${phone}`;
+
+  // 統計
+  const count = list.length;
+  const total = list.reduce((sum, r) => sum + getPaymentAmount(r.payload || {}), 0);
+  const latest = fmtDateTime(list[0].created_at);
+
+  statsEl.innerHTML = `
+    <div class="rounded-xl bg-sd-bg border border-sd-mint/10 p-3">來訪次數：<span class="text-sd-mint">${count}</span></div>
+    <div class="rounded-xl bg-sd-bg border border-sd-mint/10 p-3">累計金額：<span class="text-sd-mint">$${total}</span></div>
+    <div class="rounded-xl bg-sd-bg border border-sd-mint/10 p-3">最近一次：<span class="text-sd-text">${latest}</span></div>
+  `;
+
+  // 毛孩名集合
+  const petNames = Array.from(new Set(list.map(r => (r.pet_name || r.payload?.pet_name || "").toString()).filter(Boolean)));
+  petsEl.textContent = `毛孩：${petNames.length ? petNames.join("、") : "-"}`;
+
+  // 列表
+  container.innerHTML = "";
+  list.forEach(r => {
+    const payload = r.payload || {};
+    const pet = r.pet_name || payload.pet_name || "-";
+    const amount = getPaymentAmount(payload);
+    const status = r.status || "pending";
+
+    const div = document.createElement("div");
+    div.className = "rounded-2xl border border-sd-mint/10 bg-white/80 backdrop-blur p-4 shadow-soft cursor-pointer hover:border-sd-mint transition";
+    div.innerHTML = `
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0">
+          <div class="text-[11px] font-black text-sd-sub tracking-widest mb-1">${fmtDateTime(r.created_at)}</div>
+          <div class="text-lg font-black text-sd-text truncate">${pet}</div>
+          <div class="text-xs font-bold text-sd-sub mt-1">✂️ ${(Array.isArray(payload.service_items) ? payload.service_items.map(TServiceItem).join("、") : "-")}</div>
+        </div>
+        <div class="text-right shrink-0">
+          <div class="font-black text-sd-text">$${amount}</div>
+          <div class="${badgeClass(status)} inline-block mt-2">${badgeText(status)}</div>
+        </div>
+      </div>
+    `;
+    div.onclick = () => {
+      closeModal("customerModal");
+      openDetail(r.id);
+    };
+    container.appendChild(div);
+  });
+
+  lucide.createIcons();
+}
+
+    function renderCustomers() {
+      const list = groupCustomers();
+      const container = $("customersList");
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        $("customersEmpty").classList.remove("hidden");
+        return;
+      }
+      $("customersEmpty").classList.add("hidden");
+
+      list.forEach(c => {
+        const pets = Array.from(c.pets).filter(Boolean).join("、") || "-";
+        const div = document.createElement("div");
+        div.className = "rounded-2xl border border-sd-mint/10 bg-white p-4 shadow-soft cursor-pointer hover:border-sd-mint transition";        div.innerHTML = `
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <div class="font-black text-sd-text">${c.ownerName}</div>
+              <div class="text-xs font-bold text-sd-sub mt-1">${c.phone}</div>
+              <div class="text-[11px] font-bold text-sd-sub mt-2">毛孩：${pets}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-black text-sd-sub">來訪 ${c.count} 次</div>
+              <div class="font-black text-sd-mint mt-1">總計 $${c.total}</div>
+            </div>
+          </div>
+        `;
+        div.onclick = () => openCustomerModal(c.phone);
+        container.appendChild(div);
+      });
+
+      lucide.createIcons();
+    }
+    // =========================
+    // Detail Modal
+    // =========================
+    function setStatusBadge(status) {
+      const el = $("detailStatusBadge");
+      el.className = badgeClass(status);
+      el.textContent = badgeText(status);
+    }
+
+    function buildKV(label, value) {
+      const v = (value === null || value === undefined || value === "") ? "-" : value;
+      return `<div class="flex justify-between gap-3"><span class="text-sd-sub">${label}</span><span class="text-right text-sd-text">${v}</span></div>`;
+    }
+
+    function openModal(id) {
+      $(id).classList.remove("hidden");
+      lucide.createIcons();
+    }
+    function closeModal(id) {
+      $(id).classList.add("hidden");
+    }
+
+function generateLineFinishMessage(payload) {
+  const pet = payload?.pet_name || "毛孩";
+  return `【美容完成通知】\n${pet} 已洗香香完成囉！請於營業時間前接回，逾時將依安親費計費，有任何問題都歡迎詢問～`;
+}
+
+
+    async function openDetail(recordId) {
+      const r = records.find(x => x.id === recordId);
+      if (!r) return;
+
+      selectedRecord = r;
+      const p = r.payload || {};
+
+      $("detailTitle").textContent = `${r.pet_name || p.pet_name || "-"} · ${r.phone || p.phone || "-"}`;
+
+      // status & note
+      setStatusBadge(r.status || "pending");
+      $("detailNote").value = r.admin_note || "";
+
+      // owner
+      const ownerHtml = [
+        buildKV("姓名", p.owner_name),
+        buildKV("電話", r.phone || p.phone),
+        buildKV("Email", p.email),
+        buildKV("身分證", p.id_no),
+        buildKV("地址", p.address),
+        buildKV("緊急聯絡人", p.emergency_contact),
+        buildKV("緊急電話", p.emergency_phone),
+        buildKV("指定醫院", p.hospital),
+        buildKV("送出時間", fmtDateTime(r.created_at))
+      ].join("");
+      $("detailOwner").innerHTML = ownerHtml;
+
+      // pet
+      const petType = p.pet_type === "cat" ? "貓咪" : "狗狗";
+      const petHtml = [
+        buildKV("種類", petType),
+        buildKV("名字", r.pet_name || p.pet_name),
+        buildKV("品種", p.breed),
+        buildKV("花色", p.color),
+        buildKV("年齡", p.age),
+        buildKV("晶片狀態", p.chip_status),
+        buildKV("晶片號碼", p.chip_no),
+        buildKV("性別", p.sex),
+        buildKV("結紮", p.neuter),
+        buildKV("具攻擊性", p.aggressive),
+        buildKV("毛孩性格", p.social_type),
+        buildKV("其他狀況", Array.isArray(p.pet_status) ? p.pet_status.join("、") : "-"),
+        buildKV("病史(有/無)", p.medical_history_has),
+        buildKV("病史內容", p.medical_history_note),
+        buildKV("不喜歡碰觸", p.dislike_touch),
+        buildKV("備註", p.note),
+      ].join("");
+      $("detailPet").innerHTML = petHtml;
+
+      // service
+      const items = Array.isArray(p.service_items) ? p.service_items : [];
+      const serviceHtml = [
+        buildKV("服務項目", items.length ? items.map(TServiceItem).join("、") : "-"),
+        buildKV("其他項目", p.other_service_text),
+        buildKV("預計接回", p.notify_later_pickup ? "另行通知" : (p.pickup_time || "-")),
+      ].join("");
+      $("detailService").innerHTML = serviceHtml;
+
+      // payment
+      const payHtml = [
+        buildKV("支付方式", p.payment_method === "other" ? (p.payment_other || "其他") : (p.payment_method || "-")),
+        buildKV("金額", `$${getPaymentAmount(p)}`),
+      ].join("");
+      $("detailPayment").innerHTML = payHtml;
+
+      // signature
+      $("detailSignatureImg").src = r.signature_url || "";
+
+      // delete button (manager only)
+      if (currentRole === "manager") $("btnDelete").classList.remove("hidden");
+      else $("btnDelete").classList.add("hidden");
+
+      openModal("detailModal");
+    }
+
+    async function updateStatus(newStatus) {
+      if (!selectedRecord) return;
+      const id = selectedRecord.id;
+
+      const { error } = await sb
+        .from("grooming_agreements")
+        .update({ status: newStatus })
+        .eq("id", id);
+
+      if (error) return toast("更新狀態失敗：" + error.message);
+
+      // local update
+      selectedRecord.status = newStatus;
+      const idx = records.findIndex(x => x.id === id);
+      if (idx >= 0) records[idx].status = newStatus;
+
+      setStatusBadge(newStatus);
+      renderRecords();
+    }
+
+    async function updateNote(noteText) {
+      if (!selectedRecord) return;
+      const id = selectedRecord.id;
+
+      const { error } = await sb
+        .from("grooming_agreements")
+        .update({ admin_note: noteText })
+        .eq("id", id);
+
+      if (error) return toast("儲存備註失敗：" + error.message);
+
+      selectedRecord.admin_note = noteText;
+      const idx = records.findIndex(x => x.id === id);
+      if (idx >= 0) records[idx].admin_note = noteText;
+    }
+
+    async function deleteRecord() {
+      if (!selectedRecord) return;
+      if (currentRole !== "manager") return toast("只有店長可刪除");
+
+      const id = selectedRecord.id;
+
+      const { error } = await sb
+        .from("grooming_agreements")
+        .delete()
+        .eq("id", id);
+
+      if (error) return toast("刪除失敗：" + error.message);
+
+      records = records.filter(x => x.id !== id);
+      selectedRecord = null;
+      closeModal("detailModal");
+      renderRecords();
+      renderCustomers();
+      toast("✅ 已刪除");
+    }
+
+    // =========================
+    // Sensitive action re-auth
+    // =========================
+    function openAuthModal(actionFn) {
+      pendingSensitiveAction = actionFn;
+      $("authPassword").value = "";
+      $("authError").classList.add("hidden");
+      openModal("authModal");
+      $("authPassword").focus();
+    }
+
+    async function confirmAuth() {
+      const pwd = $("authPassword").value;
+      if (!pwd) return;
+
+      $("btnAuthConfirm").disabled = true;
+      $("btnAuthConfirm").classList.add("opacity-60");
+
+      try {
+        const { data } = await sb.auth.getUser();
+        const email = data?.user?.email;
+        const { error } = await sb.auth.signInWithPassword({ email, password: pwd });
+        if (error) throw error;
+
+        closeModal("authModal");
+        if (typeof pendingSensitiveAction === "function") pendingSensitiveAction();
+        pendingSensitiveAction = null;
+      } catch (e) {
+        $("authError").textContent = "驗證失敗：密碼錯誤";
+        $("authError").classList.remove("hidden");
+      } finally {
+        $("btnAuthConfirm").disabled = false;
+        $("btnAuthConfirm").classList.remove("opacity-60");
+      }
+    }
+
+    // =========================
+    // Tabs
+    // =========================
+function setTab(tab) {
+  const base = "btn-jelly py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2";
+  const active = " bg-sd-mint text-white";
+  const inactive = " bg-white text-sd-mint border border-sd-mint/15";
+
+  if (tab === "customers") {
+    $("tabCustomers").className = base + active;
+    $("tabRecords").className = base + inactive;
+
+    $("customersPanel").classList.remove("hidden");
+    $("recordsPanel").classList.add("hidden");
+    renderCustomers();
+  } else {
+    $("tabRecords").className = base + active;
+    $("tabCustomers").className = base + inactive;
+
+    $("recordsPanel").classList.remove("hidden");
+    $("customersPanel").classList.add("hidden");
+    renderRecords();
+  }
+
+  lucide.createIcons();
+}
+    // =========================
+    // Boot
+    // =========================
+    async function bootApp() {
+      $("viewLoading").classList.add("hidden");
+
+      const session = await ensureSession();
+      if (!session) {
+        $("viewLogin").classList.remove("hidden");
+        $("viewApp").classList.add("hidden");
+        $("topBar").classList.add("hidden");
+        $("btnSignOut").classList.add("hidden");
+        lucide.createIcons();
+        return;
+      }
+
+      const user = await loadUserAndGuard();
+      if (!user) {
+        $("viewLogin").classList.remove("hidden");
+        $("viewApp").classList.add("hidden");
+        $("btnSignOut").classList.add("hidden");
+        lucide.createIcons();
+        return;
+      }
+
+      $("viewLogin").classList.add("hidden");
+      $("viewApp").classList.remove("hidden");
+      $("topBar").classList.remove("hidden");
+
+      // fetch data
+      await fetchRecords();
+      setTab("records");
+      renderCustomers();
+      lucide.createIcons();
+    }
+
+    // =========================
+    // Events
+    // =========================
+    window.addEventListener("DOMContentLoaded", async () => {
+// login UI steps
+const showPick = () => {
+  selectedLoginEmail = "";
+  $("loginError").classList.add("hidden");
+  $("loginStepPick").classList.remove("hidden");
+  $("loginStepPwd").classList.add("hidden");
+};
+
+const showPwd = (role) => {
+  $("loginError").classList.add("hidden");
+  $("loginStepPick").classList.add("hidden");
+  $("loginStepPwd").classList.remove("hidden");
+
+  $("loginRolePill").textContent = role === "manager" ? "管理員模式" : "員工模式";
+  $("loginPassword").value = "";
+  $("loginPassword").focus();
+  lucide.createIcons();
+};
+
+// customer modal
+$("btnCloseCustomerModal")?.addEventListener("click", () => closeModal("customerModal"));
+$("customerModalBackdrop")?.addEventListener("click", () => closeModal("customerModal"));
+
+$("btnCustomerShowAll")?.addEventListener("click", () => {
+  $("chkIncomplete").checked = false;
+  syncFilterUI();
+  if (selectedCustomerPhone) renderCustomerModal(selectedCustomerPhone);
+});
+
+// pick role
+$("btnPickManager").addEventListener("click", () => {
+  selectedLoginEmail = MANAGER_EMAIL;
+  showPwd("manager");
+});
+
+$("btnPickStaff").addEventListener("click", () => {
+  selectedLoginEmail = STAFF_EMAIL;
+  showPwd("staff");
+});
+
+// switch role
+$("btnSwitchRole").addEventListener("click", showPick);
+
+// login
+$("btnLogin").addEventListener("click", async () => {
+  const pwd = $("loginPassword").value || "";
+
+  if (!selectedLoginEmail) {
+    $("loginError").textContent = "請先選擇 店長 / 員工";
+    $("loginError").classList.remove("hidden");
+    return;
+  }
+  if (!pwd) {
+    $("loginError").textContent = "請輸入密碼";
+    $("loginError").classList.remove("hidden");
+    return;
+  }
+
+  await login(selectedLoginEmail, pwd);
+});
+
+// enter to login
+$("loginPassword").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") $("btnLogin").click();
+});
+
+// default
+showPick();
+
+      $("btnSignOut").addEventListener("click", signOut);
+
+      // tabs
+      $("tabRecords").addEventListener("click", () => setTab("records"));
+      $("tabCustomers").addEventListener("click", () => setTab("customers"));
+
+// filters
+$("searchInput").addEventListener("input", () => {
+  if (!$("recordsPanel").classList.contains("hidden")) renderRecords();
+  if (!$("customersPanel").classList.contains("hidden")) renderCustomers();
+});
+
+// 只看未完成：用按鈕切換（Soosi 感）
+$("btnToggleIncomplete")?.addEventListener("click", () => {
+  $("chkIncomplete").checked = !$("chkIncomplete").checked;
+  syncFilterUI();
+  renderRecords();
+});
+
+// checkbox 若被程式改動，也要同步 UI
+$("chkIncomplete").addEventListener("change", () => {
+  syncFilterUI();
+  renderRecords();
+});
+
+// 初始化一次
+syncFilterUI();
+
+      // refresh
+      $("btnRefresh").addEventListener("click", async () => {
+        $("btnRefresh").disabled = true;
+        $("btnRefresh").classList.add("opacity-60");
+        try {
+          await fetchRecords();
+          renderRecords();
+          renderCustomers();
+        } catch (e) {
+          toast("讀取失敗：" + e.message);
+        } finally {
+          $("btnRefresh").disabled = false;
+          $("btnRefresh").classList.remove("opacity-60");
+        }
+      });
+
+      // detail modal
+      $("btnCloseDetail").addEventListener("click", () => closeModal("detailModal"));
+
+      // status buttons
+      document.querySelectorAll('[data-status]').forEach(btn => {
+        btn.addEventListener("click", () => updateStatus(btn.getAttribute("data-status")));
+      });
+
+      // note autosave on blur
+      $("detailNote").addEventListener("blur", async () => {
+        const v = $("detailNote").value || "";
+        await updateNote(v);
+      });
+
+      // actions
+      $("btnCopyLine").addEventListener("click", async () => {
+        if (!selectedRecord) return;
+        const msg = generateLineFinishMessage(selectedRecord.payload || {});
+        await navigator.clipboard.writeText(msg);
+        toast("✅ 已複製到剪貼簿");
+      });
+
+      $("btnDelete").addEventListener("click", () => {
+        if (!selectedRecord) return;
+        if (!confirm("確定要刪除這筆紀錄？刪除後無法復原。")) return;
+        openAuthModal(deleteRecord);
+      });
+
+      // auth modal
+      $("btnAuthCancel").addEventListener("click", () => closeModal("authModal"));
+      $("btnAuthConfirm").addEventListener("click", confirmAuth);
+      $("authPassword").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") confirmAuth();
+      });
+
+      // boot
+      try {
+        await bootApp();
+      } catch (e) {
+        $("viewLoading").classList.add("hidden");
+        $("viewLogin").classList.remove("hidden");
+        toast("初始化失敗：" + e.message);
+      }
+
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

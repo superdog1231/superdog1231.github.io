@@ -111,7 +111,7 @@
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
-                    <img src="logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
+                    <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
                 </div>
                 <div class="leading-tight">
                     <p class="font-black text-sd-mint text-lg">Super Dog</p>
@@ -127,7 +127,7 @@
         </div>
     </header>
 
-    <!-- ✅ 首頁門面 -->
+    <!-- 首頁 -->
     <section id="view-home" class="px-4 py-8">
         <div class="max-w-3xl mx-auto space-y-5">
 
@@ -138,7 +138,7 @@
 
                 <div class="relative z-10">
 <div class="w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden bg-sd-mint/10 border-4 border-sd-mint/25 ring-4 ring-white shadow-lg">
-    <img src="logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-2 drop-shadow-md">
+    <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-2 drop-shadow-md">
 </div>
                     <h1 class="text-3xl font-black text-sd-mint tracking-wide mb-2">
                         Super Dog
@@ -285,11 +285,11 @@
                 <label class="block text-sm font-bold text-sd-sub mb-2">寵物種類 <span class="text-sd-peach">*</span></label>
                 <div class="grid grid-cols-2 gap-3">
                     <label class="cursor-pointer">
-                        <input type="radio" name="petType" value="dog" class="peer sr-only" checked>
+                        <input type="radio" name="petType" value="狗狗" class="peer sr-only" checked>
                         <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white peer-checked:border-sd-mint transition-all">狗狗</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="petType" value="cat" class="peer sr-only">
+                        <input type="radio" name="petType" value="貓咪" class="peer sr-only">
                         <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white peer-checked:border-sd-mint transition-all">貓咪</div>
                     </label>
                 </div>
@@ -322,21 +322,21 @@
 
     <div class="grid grid-cols-3 gap-2">
         <label class="cursor-pointer">
-            <input type="radio" name="chipStatus" value="has" class="peer sr-only" checked>
+            <input type="radio" name="chipStatus" value="有晶片" class="peer sr-only" checked>
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white peer-checked:border-sd-mint transition-all">
                 有晶片
             </div>
         </label>
 
         <label class="cursor-pointer">
-            <input type="radio" name="chipStatus" value="unknown" class="peer sr-only">
+            <input type="radio" name="chipStatus" value="號碼不詳" class="peer sr-only">
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white peer-checked:border-sd-mint transition-all">
                 號碼不詳
             </div>
         </label>
 
         <label class="cursor-pointer">
-            <input type="radio" name="chipStatus" value="none" class="peer sr-only">
+            <input type="radio" name="chipStatus" value="無晶片" class="peer sr-only">
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white peer-checked:border-sd-mint transition-all">
                 無晶片
             </div>
@@ -351,11 +351,11 @@
                     <label class="block text-sm font-bold text-sd-sub mb-2">性別</label>
                     <div class="grid grid-cols-2 gap-2">
                         <label class="cursor-pointer">
-                            <input type="radio" name="petSex" value="male" class="peer sr-only">
+                            <input type="radio" name="petSex" value="公" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">公</div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="petSex" value="female" class="peer sr-only">
+                            <input type="radio" name="petSex" value="母" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">母</div>
                         </label>
                     </div>
@@ -365,11 +365,11 @@
                     <label class="block text-sm font-bold text-sd-sub mb-2">是否結紮</label>
                     <div class="grid grid-cols-2 gap-2">
                         <label class="cursor-pointer">
-                            <input type="radio" name="petNeuter" value="yes" class="peer sr-only">
+                            <input type="radio" name="petNeuter" value="已結紮" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">是</div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="petNeuter" value="no" class="peer sr-only">
+                            <input type="radio" name="petNeuter" value="未結紮" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
                         </label>
                     </div>
@@ -423,16 +423,15 @@
     </div>
 </div>
 
-<!-- 原本的「具攻擊性」保留（若你覺得重複也可以刪掉這段） -->
 <div>
     <label class="block text-sm font-bold text-sd-sub mb-2">具攻擊性</label>
     <div class="grid grid-cols-2 gap-2">
         <label class="cursor-pointer">
-            <input type="radio" name="aggressive" value="yes" class="peer sr-only">
+            <input type="radio" name="aggressive" value="是" class="peer sr-only">
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">是</div>
         </label>
         <label class="cursor-pointer">
-            <input type="radio" name="aggressive" value="no" class="peer sr-only">
+            <input type="radio" name="aggressive" value="否" class="peer sr-only">
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
         </label>
     </div>
@@ -446,11 +445,11 @@
                 <label class="block text-sm font-bold text-sd-sub mb-2">過往病史</label>
                 <div class="grid grid-cols-2 gap-3 mb-2">
                     <label class="cursor-pointer">
-                        <input type="radio" id="medicalYes" name="medicalHistoryHas" value="yes" class="peer sr-only">
+                        <input type="radio" id="medicalYes" name="medicalHistoryHas" value="有" class="peer sr-only">
                         <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">有</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" id="medicalNo" name="medicalHistoryHas" value="no" class="peer sr-only">
+                        <input type="radio" id="medicalNo" name="medicalHistoryHas" value="無" class="peer sr-only">
                         <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">無</div>
                     </label>
                 </div>
@@ -474,8 +473,8 @@
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">1. 眼睛</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="normal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="abnormal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkEyeNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
@@ -483,8 +482,8 @@
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">2. 耳朵</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="normal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="abnormal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkEarNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
@@ -492,8 +491,8 @@
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">3. 皮膚</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="normal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="abnormal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkSkinNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
@@ -501,8 +500,8 @@
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">4. 皮毛</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="normal" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="knot" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">打結/寄生蟲</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">打結/寄生蟲</div></label>
                 </div>
                 <input type="text" id="checkFurNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
@@ -581,14 +580,14 @@
 
             <div class="grid grid-cols-2 gap-3 mb-2">
                 <label class="cursor-pointer">
-                    <input type="radio" name="paymentMethod" value="cash" class="peer sr-only">
+                    <input type="radio" name="paymentMethod" value="現金" class="peer sr-only">
                     <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
                         現金
                     </div>
                 </label>
 
                 <label class="cursor-pointer">
-                    <input type="radio" name="paymentMethod" value="linepay" class="peer sr-only">
+                    <input type="radio" name="paymentMethod" value="LinePay" class="peer sr-only">
                     <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
                         LINE Pay
                     </div>
@@ -597,7 +596,7 @@
 
             <div class="flex gap-2">
                 <label class="cursor-pointer shrink-0">
-                    <input type="radio" name="paymentMethod" value="other" class="peer sr-only">
+                    <input type="radio" name="paymentMethod" value="其他" class="peer sr-only">
                     <div class="px-4 py-3 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
                         其他
                     </div>
@@ -854,21 +853,17 @@ function renderPetListFromSupabase(customer, pets) {
     `).join("");
 }
 
+// ✅✅ 帶入：改用 RPC 查回來的快取，不再直接查 customers/pets（避免 RLS 擋）
+// 你 renderPetListFromSupabase() 會傳 customerId/petId 進來，但這裡其實只用 petId 去快取拿資料即可
 window.selectPetFromSupabase = async function(customerId, petId) {
     try {
-        const { data: customer, error: cErr } = await sb
-            .from('customers')
-            .select('*')
-            .eq('id', customerId)
-            .single();
-        if (cErr) throw cErr;
+        const cache = window.__historyCache || null;
+        const customer = cache?.customer || null;
+        const pet = cache?.petsById?.[petId] || null;
 
-        const { data: pet, error: pErr } = await sb
-            .from('pets')
-            .select('*')
-            .eq('id', petId)
-            .single();
-        if (pErr) throw pErr;
+        if (!customer || !pet) {
+            throw new Error("history cache missing");
+        }
 
         // ✅ 帶入飼主資料
         document.getElementById('phoneInput').value = customer.phone || '';
@@ -937,7 +932,8 @@ window.selectPetFromSupabase = async function(customerId, petId) {
             if (mhRadio) mhRadio.checked = true;
         }
         document.getElementById('medicalHistoryInput').value = pet.medical_history_note || '';
-        // 觸發你原本的 disabled/placeholder 邏輯
+
+        // 觸發 disabled/placeholder 邏輯
         const medicalYes = document.getElementById('medicalYes');
         const medicalNo = document.getElementById('medicalNo');
         if (medicalYes && medicalNo) {
@@ -951,15 +947,16 @@ window.selectPetFromSupabase = async function(customerId, petId) {
         alert('帶入失敗，請稍後再試');
     }
 };
+
 const modal = document.getElementById('historyModal');
 
-function normalizePhone(input) {
+function 正常izePhone(input) {
     return String(input || "").replace(/[^\d]/g, "").trim(); // 只留數字
 }
 
 async function loadHistoryByPhone() {
     const phoneRaw = document.getElementById('phoneInput').value;
-    const phone = normalizePhone(phoneRaw);
+    const phone = 正常izePhone(phoneRaw);
 
     if (!phone) {
         alert("請先輸入電話");
@@ -1128,7 +1125,7 @@ async function uploadSignatureAndGetUrl(signatureDataUrl, phone) {
         background: '#FFFFFF'
     });
 
-    const safePhone = normalizePhone(phone || 'unknown');
+    const safePhone = 正常izePhone(phone || 'unknown');
     const filePath = `superdog/${safePhone}/${Date.now()}_${Math.random().toString(36).slice(2)}.${compressed.ext}`;
 
     const { data, error } = await sb.storage
@@ -1145,7 +1142,7 @@ async function uploadSignatureAndGetUrl(signatureDataUrl, phone) {
 }
 
 function collectPayload() {
-    const phone = normalizePhone(document.getElementById('phoneInput').value);
+    const phone = 正常izePhone(document.getElementById('phoneInput').value);
 
     const payload = {
         // owner
@@ -1214,7 +1211,7 @@ async function submitAgreement() {
     const agree = document.getElementById('agreeCheckbox');
     const signatureDataUrl = document.getElementById('signatureData').value;
 
-    const phone = normalizePhone(document.getElementById('phoneInput').value);
+    const phone = 正常izePhone(document.getElementById('phoneInput').value);
     const petName = (document.getElementById('petName').value || '').trim();
     const ownerName = (document.getElementById('ownerName').value || '').trim();
 
@@ -1618,7 +1615,7 @@ window.addEventListener('DOMContentLoaded', init);
 
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=2');
+            const reg = await navigator.serviceWorker.register('./sw.js?v=3');
 
             if (reg.waiting) {
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
