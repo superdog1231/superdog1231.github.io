@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8" />
@@ -109,7 +109,7 @@
     <header class="sticky top-0 z-40 bg-sd-bg/90 backdrop-blur border-b border-sd-mint/10 shadow-soft">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
                     <img src="logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
                 </div>
                 <div class="leading-tight">
@@ -136,10 +136,9 @@
                 <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-sd-mint/10 rounded-full blur-xl pointer-events-none"></div>
 
                 <div class="relative z-10">
-                    <div class="w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-                        <img src="logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-2">
-                    </div>
-
+<div class="w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden bg-sd-mint/10 border-4 border-sd-mint/25 ring-4 ring-white shadow-lg">
+    <img src="logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-2 drop-shadow-md">
+</div>
                     <h1 class="text-3xl font-black text-sd-mint tracking-wide mb-2">
                         Super Dog
                     </h1>
@@ -376,48 +375,67 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-2">親人</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="friendlyPeople" value="yes" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">是</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="friendlyPeople" value="no" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
-                        </label>
-                    </div>
+<div class="space-y-4">
+    <div>
+        <label class="block text-sm font-bold text-sd-sub mb-2">毛孩性格（擇一）</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+                <input type="radio" name="socialType" value="親人親狗" class="peer sr-only">
+                <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                    1. 親人親狗
                 </div>
-                <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-2">親狗</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="friendlyDog" value="yes" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">是</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="friendlyDog" value="no" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-2">具攻擊性</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="aggressive" value="yes" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">是</div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="aggressive" value="no" class="peer sr-only">
-                            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
-                        </label>
-                    </div>
-                </div>
-            </div>
+            </label>
 
+            <label class="cursor-pointer">
+                <input type="radio" name="socialType" value="親人不親狗" class="peer sr-only">
+                <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                    2. 親人不親狗
+                </div>
+            </label>
+
+            <label class="cursor-pointer">
+                <input type="radio" name="socialType" value="親狗不親人" class="peer sr-only">
+                <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
+                    3. 親狗不親人
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <div>
+        <label class="block text-sm font-bold text-sd-sub mb-2">其他狀況（可複選）</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <label class="cursor-pointer">
+                <input type="checkbox" name="petStatus" value="怕生 易緊張" class="peer sr-only">
+                <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-yellow peer-checked:text-sd-text transition-all">
+                    4. 怕生／易緊張
+                </div>
+            </label>
+
+            <label class="cursor-pointer">
+                <input type="checkbox" name="petStatus" value="恰北北 要帶護具" class="peer sr-only">
+                <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">
+                    5. 恰北北／需帶護具
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- 原本的「具攻擊性」保留（若你覺得重複也可以刪掉這段） -->
+<div>
+    <label class="block text-sm font-bold text-sd-sub mb-2">具攻擊性</label>
+    <div class="grid grid-cols-2 gap-2">
+        <label class="cursor-pointer">
+            <input type="radio" name="aggressive" value="yes" class="peer sr-only">
+            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">是</div>
+        </label>
+        <label class="cursor-pointer">
+            <input type="radio" name="aggressive" value="no" class="peer sr-only">
+            <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
+        </label>
+    </div>
+</div>
             <div>
                 <label class="block text-sm font-bold text-sd-sub mb-1.5">不喜歡被碰觸的部位</label>
                 <input type="text" id="dislikeTouch" placeholder="例如：耳朵、尾巴、腳掌（若無可不填）" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
@@ -436,6 +454,10 @@
                     </label>
                 </div>
                 <input type="text" id="medicalHistoryInput" placeholder="若有，請簡述病史" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
+
+<p class="text-xs text-sd-sub font-bold mt-2 leading-relaxed">
+    寵物病史飼主應盡告知義務；若隱瞞病況導致意外發生或死亡，經法定程序判定店家無疏失，則不需負擔損害賠償責任。
+</p>
             </div>
         </div>
     </section>
@@ -493,14 +515,27 @@
             <h2 class="text-lg font-black text-sd-text">本次服務內容（可複選）</h2>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-            <label class="cursor-pointer"><input type="checkbox" name="serviceItem" value="基礎洗澡" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">基礎洗澡</div></label>
-            <label class="cursor-pointer"><input type="checkbox" name="serviceItem" value="精緻美容" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">精緻美容</div></label>
-            <label class="cursor-pointer"><input type="checkbox" name="serviceItem" value="局部修剪" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">局部修剪</div></label>
-            <label class="cursor-pointer"><input type="checkbox" name="serviceItem" value="包月美容" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">包月美容</div></label>
-            <label class="cursor-pointer"><input type="checkbox" name="serviceItem" value="住宿安親" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">住宿安親</div></label>
-            <label class="cursor-pointer"><input type="checkbox" id="otherServiceCheck" name="serviceItem" value="其他項目" class="peer sr-only"><div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">其他項目</div></label>
-        </div>
+<div class="grid grid-cols-2 gap-3">
+    <label class="cursor-pointer">
+        <input type="checkbox" name="serviceItem" value="基礎洗澡" class="peer sr-only">
+        <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">基礎洗澡</div>
+    </label>
+
+    <label class="cursor-pointer">
+        <input type="checkbox" name="serviceItem" value="精緻美容" class="peer sr-only">
+        <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">精緻美容</div>
+    </label>
+
+    <label class="cursor-pointer">
+        <input type="checkbox" name="serviceItem" value="局部修剪" class="peer sr-only">
+        <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">局部修剪</div>
+    </label>
+
+    <label class="cursor-pointer">
+        <input type="checkbox" id="otherServiceCheck" name="serviceItem" value="其他項目" class="peer sr-only">
+        <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">其他項目（自行輸入）</div>
+    </label>
+</div>
 
         <div id="otherServiceWrap" class="hidden mt-3">
             <input type="text" id="otherServiceText" placeholder="請輸入其他項目" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
@@ -576,6 +611,7 @@
     </div>
 </section>
 <!-- 乙方資訊 -->
+<!-- 乙方資訊 -->
 <section class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
     <div class="flex items-center gap-2 mb-4">
         <i data-lucide="building-2" class="w-5 h-5 text-sd-mint"></i>
@@ -585,16 +621,24 @@
     <div class="space-y-2 text-sm font-bold text-sd-text">
         <div class="flex justify-between gap-4">
             <span class="text-sd-sub">負責人</span>
-            <span class="text-right">待提供</span>
+            <span class="text-right">戴君如</span>
         </div>
+
+        <div class="flex justify-between gap-4">
+            <span class="text-sd-sub">統編</span>
+            <span class="text-right">41043003</span>
+        </div>
+
         <div class="flex justify-between gap-4">
             <span class="text-sd-sub">聯絡電話</span>
             <span class="text-right">(03)313-3178</span>
         </div>
+
         <div class="flex justify-between gap-4">
             <span class="text-sd-sub">地址</span>
             <span class="text-right">桃園市蘆竹區上興路81號</span>
         </div>
+
         <div class="flex justify-between gap-4">
             <span class="text-sd-sub">許可證號</span>
             <span class="text-right">待提供</span>
@@ -612,9 +656,13 @@
     </div>
 
     <div class="mt-4 bg-sd-bg border border-sd-mint/15 rounded-xl p-3">
-        <p class="text-xs font-black text-sd-mint mb-1">特約緊急送醫場所</p>
-        <p class="font-black text-sd-text">待提供</p>
-        <p class="text-xs text-sd-sub">請補上特約醫院名稱與地址</p>
+        <p class="text-xs font-black text-sd-mint mb-1">緊急送醫</p>
+        <p class="font-black text-sd-text">守足動物醫院</p>
+        <p class="text-sm text-sd-text font-bold">桃園市蘆竹區上興路61號</p>
+        <p class="text-sm text-sd-text font-bold">03 3233866</p>
+        <p class="text-xs text-sd-peach font-black mt-2">
+            若發生緊急狀況，一律先送至就近「守足動物醫院」救治，不耽誤黃金救援時間。
+        </p>
     </div>
 </section>
 
@@ -722,13 +770,16 @@ shop: {
     closedDay: "週一公休"
 },       
 terms: [
-                "【條款更新中】正式版本待客戶確認後上線，以下為暫定說明。",
-                "1. 本次服務項目與費用，依門市現場與飼主確認內容為準。",
-                "2. 若毛孩有慢性病、高齡、攻擊傾向或特殊照護需求，飼主需事先主動告知。",
-                "3. 美容過程若發現毛況、皮膚或行為狀況不適合原訂服務，門市得與飼主討論調整內容。",
-                "4. 客製造型會依毛量、毛流、骨架與現場狀態調整，無法保證與參考圖完全一致。",
-                "5. 正式契約條款將於客戶確認後更新，未盡事宜依門市公告與雙方溝通為準。"
-            ],
+    "※以上資料由飼主本人提供，並同意將資料內容提供於公司存續期間以電話、簡訊和寄發DM方式，提供相關活動或促銷訊息，或帶寵物到動物醫院留存相關資料使用。",
+    "1. 除本契約另有約定、特殊緊急情況、或不可抗力之情況外，未經飼主同意，店家不得將寵物帶離美容場所（同上店家地址）、轉售、轉讓或以其他變相方法作為其他用途。",
+    "2. 飼主應於美容當日將寵物領回，如經通知 1 日內未領回，依動保法第 29 條第 1 款通知主管機關，視為飼主惡意棄養；相關罰金為 3 萬～15 萬元，其他衍生性費用將向飼主求償（例：人員加班費等）。",
+    "3. 寵物發生攻擊行為，如因飼主未善盡告知義務而造成店內人員傷亡、財物損毀等費用，將全額向飼主（寵物占有權人）求償。",
+    "4. 店家應按本契約約定內容提供一定品質之美容服務。若因可歸責於店家或其受僱人之事由，導致其提供之美容服務有瑕疵，造成飼主發生損失之情況，飼主得要求減少價金或解除契約。",
+    "5. 本契約之任一方得隨時終止本契約；若因本契約之中止而生損害之一方，得向他方請求賠償。",
+    "6. 於美容服務期間，如發現寵物有異常狀態，應立即通知飼主並妥善處理；如發生異常狀態之原因可歸責於店家之操作行為，店家應負損害賠償責任（例：摔傷寵物等）。",
+    "7. 因本契約所生之訴訟，雙方合意以地方法院為管轄法院。",
+    "8. 美容契約相關法條，附件如店內張貼之公告；如有需求請自行拍照留存。"
+],
             dummyPets: [
                 { id: 1, name: "球球", breed: "貴賓", owner: "王大明", phone: "0912345678", note: "喜歡抱抱熊造型，耳朵要留長" },
                 { id: 2, name: "豆豆", breed: "比熊", owner: "王大明", phone: "0912345678", note: "皮膚敏感，需用溫和洗劑" }
