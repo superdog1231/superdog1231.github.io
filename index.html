@@ -137,7 +137,7 @@
                 <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-sd-mint/10 rounded-full blur-xl pointer-events-none"></div>
 
                 <div class="relative z-10">
-<div class="w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden bg-sd-mint/10 border-4 border-sd-mint/25 ring-4 ring-white shadow-lg">
+<div id="heroLogo" class="w-44 h-44 mx-auto mb-5 rounded-full overflow-hidden bg-sd-mint/10 border-4 border-sd-mint/25 ring-4 ring-white shadow-lg cursor-pointer select-none">
     <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-2 drop-shadow-md">
 </div>
                     <h1 class="text-3xl font-black text-sd-mint tracking-wide mb-2">
@@ -246,21 +246,21 @@
                 <input type="email" id="ownerEmail" placeholder="若無可留空" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
             </div>
 <div>
-    <label class="block text-sm font-bold text-sd-sub mb-1.5">身分證字號</label>
+    <label class="block text-sm font-bold text-sd-sub mb-1.5">身分證字號 <span class="text-sd-peach">*</span></label>
     <input type="text" id="ownerId" placeholder="例如：A123456789" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
 </div>
             <div>
-                <label class="block text-sm font-bold text-sd-sub mb-1.5">通訊地址</label>
+                <label class="block text-sm font-bold text-sd-sub mb-1.5">通訊地址 <span class="text-sd-peach">*</span></label>
                 <input type="text" id="ownerAddress" placeholder="請輸入通訊地址" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-1.5">緊急聯絡人</label>
+                    <label class="block text-sm font-bold text-sd-sub mb-1.5">緊急聯絡人 <span class="text-sd-peach">*</span></label>
                     <input type="text" id="emergencyContact" placeholder="請輸入姓名" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-1.5">緊急電話</label>
+                    <label class="block text-sm font-bold text-sd-sub mb-1.5">緊急電話 <span class="text-sd-peach">*</span></label>
                     <input type="tel" id="emergencyPhone" placeholder="09xxxxxxxx" class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all text-sd-text font-bold">
                 </div>
             </div>
@@ -348,8 +348,8 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-2">性別</label>
-                    <div class="grid grid-cols-2 gap-2">
+                    <label class="block text-sm font-bold text-sd-sub mb-2">性別 <span class="text-sd-peach">*</span></label>
+                    <div class="grid grid-cols-2 gap-2 p-1 rounded-xl">
                         <label class="cursor-pointer">
                             <input type="radio" name="petSex" value="公" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">公</div>
@@ -362,8 +362,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-sd-sub mb-2">是否結紮</label>
-                    <div class="grid grid-cols-2 gap-2">
+                    <label class="block text-sm font-bold text-sd-sub mb-2">是否結紮 <span class="text-sd-peach">*</span></label>
+                    <div class="grid grid-cols-2 gap-2 p-1 rounded-xl">
                         <label class="cursor-pointer">
                             <input type="radio" name="petNeuter" value="是" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">是</div>
@@ -424,8 +424,8 @@
 </div>
 
 <div>
-    <label class="block text-sm font-bold text-sd-sub mb-2">具攻擊性</label>
-    <div class="grid grid-cols-2 gap-2">
+    <label class="block text-sm font-bold text-sd-sub mb-2">具攻擊性 <span class="text-sd-peach">*</span></label>
+    <div class="grid grid-cols-2 gap-2 p-1 rounded-xl">
         <label class="cursor-pointer">
             <input type="radio" name="aggressive" value="是" class="peer sr-only">
             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub text-sm font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">是</div>
@@ -442,8 +442,8 @@
             </div>
 
             <div>
-                <label class="block text-sm font-bold text-sd-sub mb-2">過往病史</label>
-                <div class="grid grid-cols-2 gap-3 mb-2">
+                <label class="block text-sm font-bold text-sd-sub mb-2">過往病史 <span class="text-sd-peach">*</span></label>
+                <div class="grid grid-cols-2 gap-3 mb-2 p-1 rounded-xl">
                     <label class="cursor-pointer">
                         <input type="radio" id="medicalYes" name="medicalHistoryHas" value="有" class="peer sr-only">
                         <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">有</div>
@@ -466,14 +466,13 @@
     <section class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
         <div class="flex items-center gap-2 mb-4">
             <i data-lucide="eye" class="w-5 h-5 text-sd-mint"></i>
-            <h2 class="text-lg font-black text-sd-text">寵物身體狀態檢視（目視）</h2>
+            <h2 class="text-lg font-black text-sd-text">寵物身體狀態檢視（目視） <span class="text-sd-peach">*</span></h2>
         </div>
 
         <div class="space-y-4">
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">1. 眼睛</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+<div class="grid grid-cols-2 gap-2 mb-2 p-1 rounded-xl">                    <label class="cursor-pointer"><input type="radio" name="checkEye" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
                     <label class="cursor-pointer"><input type="radio" name="checkEye" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkEyeNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
@@ -481,8 +480,7 @@
 
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">2. 耳朵</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+<div class="grid grid-cols-2 gap-2 mb-2 p-1 rounded-xl">                    <label class="cursor-pointer"><input type="radio" name="checkEar" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
                     <label class="cursor-pointer"><input type="radio" name="checkEar" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkEarNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
@@ -490,8 +488,7 @@
 
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">3. 皮膚</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+<div class="grid grid-cols-2 gap-2 mb-2 p-1 rounded-xl">                    <label class="cursor-pointer"><input type="radio" name="checkSkin" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
                     <label class="cursor-pointer"><input type="radio" name="checkSkin" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">異常</div></label>
                 </div>
                 <input type="text" id="checkSkinNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
@@ -499,8 +496,7 @@
 
             <div class="rounded-xl border border-sd-mint/10 p-3">
                 <p class="text-sm font-black text-sd-text mb-2">4. 皮毛</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
+<div class="grid grid-cols-2 gap-2 mb-2 p-1 rounded-xl">                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
                     <label class="cursor-pointer"><input type="radio" name="checkFur" value="打結/寄生蟲" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">打結/寄生蟲</div></label>
                 </div>
                 <input type="text" id="checkFurNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
@@ -512,10 +508,10 @@
     <section class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
         <div class="flex items-center gap-2 mb-4">
             <i data-lucide="scissors" class="w-5 h-5 text-sd-mint"></i>
-            <h2 class="text-lg font-black text-sd-text">本次服務內容（可複選）</h2>
+<h2 class="text-lg font-black text-sd-text">本次服務內容（可複選） <span class="text-sd-peach">*</span></h2>
         </div>
 
-<div class="grid grid-cols-2 gap-3">
+<div id="serviceItemsGrid" class="grid grid-cols-2 gap-3 p-1 rounded-xl">
     <label class="cursor-pointer">
         <input type="checkbox" name="serviceItem" value="基礎洗澡" class="peer sr-only">
         <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">基礎洗澡</div>
@@ -578,7 +574,7 @@
         <div>
             <label class="block text-sm font-bold text-sd-sub mb-2">支付方式 <span class="text-sd-peach">*</span></label>
 
-            <div class="grid grid-cols-2 gap-3 mb-2">
+            <div class="grid grid-cols-2 gap-3 mb-2 p-1 rounded-xl">
                 <label class="cursor-pointer">
                     <input type="radio" name="paymentMethod" value="現金" class="peer sr-only">
                     <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
@@ -853,8 +849,6 @@ function renderPetListFromSupabase(customer, pets) {
     `).join("");
 }
 
-// ✅✅ 帶入：改用 RPC 查回來的快取，不再直接查 customers/pets（避免 RLS 擋）
-// 你 renderPetListFromSupabase() 會傳 customerId/petId 進來，但這裡其實只用 petId 去快取拿資料即可
 window.selectPetFromSupabase = async function(customerId, petId) {
     try {
         const cache = window.__historyCache || null;
@@ -1064,10 +1058,17 @@ function getCheckedCheckboxValues(name) {
 // =========================
 function setFieldError(el, isError) {
     if (!el) return;
+
+    const on = ['ring-2', 'ring-sd-peach', 'ring-offset-2', 'ring-offset-white', 'border-sd-peach'];
+    const off = on;
+
     if (isError) {
-        el.classList.add('ring-2', 'ring-sd-peach', 'border-sd-peach');
+        el.classList.add(...on);
+        // 讓非 input 的容器也有圓角，看起來更像「紅框提示」
+        el.classList.add('rounded-xl');
     } else {
-        el.classList.remove('ring-2', 'ring-sd-peach', 'border-sd-peach');
+        el.classList.remove(...off);
+        // rounded-xl 不移除沒關係；若你想移除也可以加 el.classList.remove('rounded-xl');
     }
 }
 
@@ -1078,18 +1079,72 @@ function focusAndScrollTo(el) {
 }
 
 function validateFormBeforeSubmit() {
+    // =========================
     // 先清掉舊錯誤樣式
+    // =========================
     const idsToClear = [
-        'phoneInput', 'ownerName', 'petName', 'chipInput',
+        'phoneInput', 'ownerName', 'ownerId', 'ownerAddress', 'emergencyContact', 'emergencyPhone',
+        'petName', 'chipInput',
         'paymentOtherText', 'paymentAmount', 'pickupTimeInput',
-        'otherServiceText'
+        'otherServiceText', 'medicalHistoryInput'
     ];
     idsToClear.forEach(id => setFieldError(document.getElementById(id), false));
 
+    const getRadioGroupWrap = (name) => {
+        const first = document.querySelector(`input[name="${name}"]`);
+        return first ? (first.closest('.grid') || first.parentElement || first) : null;
+    };
+    const clearGroups = [
+        'petType', 'chipStatus', 'petSex', 'petNeuter', 'aggressive', 'medicalHistoryHas',
+        'checkEye', 'checkEar', 'checkSkin', 'checkFur',
+        'paymentMethod'
+    ];
+    clearGroups.forEach(name => setFieldError(getRadioGroupWrap(name), false));
+
+// 服務項目群組（框整個服務選項區）
+setFieldError(document.getElementById('serviceItemsGrid'), false);
+
+    // 同意/簽名
+    setFieldError(document.getElementById('agreeCheckbox'), false);
+    setFieldError(document.getElementById('btnOpenSignature'), false);
+
+    // =========================
+    // 收集錯誤（一次顯示）
+    // =========================
+    const errors = [];
+    let firstEl = null;
+
+    const addError = (msg, el) => {
+        errors.push(msg);
+        if (!firstEl && el) firstEl = el;
+    };
+
+    const markInputError = (el, msg) => {
+        setFieldError(el, true);
+        addError(msg, el);
+    };
+
+    const markGroupError = (name, msg) => {
+        const wrap = getRadioGroupWrap(name);
+        setFieldError(wrap, true);
+        addError(msg, wrap);
+    };
+
+    // =========================
+    // 讀欄位
+    // =========================
     const phoneEl = document.getElementById('phoneInput');
     const ownerEl = document.getElementById('ownerName');
+    const ownerIdEl = document.getElementById('ownerId');
+    const addrEl = document.getElementById('ownerAddress');
+    const emgContactEl = document.getElementById('emergencyContact');
+    const emgPhoneEl = document.getElementById('emergencyPhone');
+
     const petNameEl = document.getElementById('petName');
     const chipInputEl = document.getElementById('chipInput');
+
+    const medicalNoteEl = document.getElementById('medicalHistoryInput');
+
     const pickupTimeEl = document.getElementById('pickupTimeInput');
     const notifyLaterEl = document.getElementById('notifyLaterCheck');
 
@@ -1097,144 +1152,201 @@ function validateFormBeforeSubmit() {
     const paymentAmountEl = document.getElementById('paymentAmount');
 
     const agreeEl = document.getElementById('agreeCheckbox');
+    const signBtnEl = document.getElementById('btnOpenSignature');
     const signatureDataUrl = document.getElementById('signatureData')?.value || '';
 
+    // =========================
+    // 1) 聯絡電話（必填 + 手機格式）
+    // =========================
     const phone = normalizePhone(phoneEl?.value);
-    const ownerName = (ownerEl?.value || '').trim();
-    const petName = (petNameEl?.value || '').trim();
+    if (phoneEl) phoneEl.value = phone;
 
-    // 1) phone
     if (!phone) {
-        alert('請先填寫聯絡電話');
-        setFieldError(phoneEl, true);
-        focusAndScrollTo(phoneEl);
-        return false;
-    }
-    // 台灣手機簡單檢查：10碼且09開頭（你若也要接受市話可拿掉這段）
-    if (!(phone.length === 10 && phone.startsWith('09'))) {
-        alert('聯絡電話格式不正確，請輸入 09 開頭的 10 碼手機號碼');
-        setFieldError(phoneEl, true);
-        focusAndScrollTo(phoneEl);
-        return false;
+        markInputError(phoneEl, '聯絡電話：必填');
+    } else if (!(phone.length === 10 && phone.startsWith('09'))) {
+        markInputError(phoneEl, '聯絡電話：格式不正確（需為 09 開頭 10 碼手機）');
     }
 
-    // 2) owner name
+    // =========================
+    // 2) 飼主姓名（必填）
+    // =========================
+    const ownerName = (ownerEl?.value || '').trim();
     if (!ownerName) {
-        alert('請先填寫飼主姓名');
-        setFieldError(ownerEl, true);
-        focusAndScrollTo(ownerEl);
-        return false;
+        markInputError(ownerEl, '飼主姓名：必填');
     }
 
-    // 3) pet type (radio)
+    // =========================
+    // 3) 身分證字號（必填 + 英文開頭 + 9 碼數字）
+    // =========================
+    const ownerId = ((ownerIdEl?.value || '').trim()).toUpperCase();
+    if (ownerIdEl) ownerIdEl.value = ownerId;
+
+    if (!ownerId) {
+        markInputError(ownerIdEl, '身分證字號：必填');
+    } else if (!/^[A-Z][0-9]{9}$/.test(ownerId)) {
+        markInputError(ownerIdEl, '身分證字號：格式不正確（例：A123456789）');
+    }
+
+    // =========================
+    // 4) 通訊地址（必填）
+    // =========================
+    const addr = (addrEl?.value || '').trim();
+    if (!addr) {
+        markInputError(addrEl, '通訊地址：必填');
+    }
+
+    // =========================
+    // 5) 緊急聯絡人（必填）
+    // =========================
+    const emgContact = (emgContactEl?.value || '').trim();
+    if (!emgContact) {
+        markInputError(emgContactEl, '緊急聯絡人：必填');
+    }
+
+    // =========================
+    // 6) 緊急電話（必填 + 手機格式）
+    // =========================
+    const emgPhone = normalizePhone(emgPhoneEl?.value);
+    if (emgPhoneEl) emgPhoneEl.value = emgPhone;
+
+    if (!emgPhone) {
+        markInputError(emgPhoneEl, '緊急電話：必填');
+    } else if (!(emgPhone.length === 10 && emgPhone.startsWith('09'))) {
+        markInputError(emgPhoneEl, '緊急電話：格式不正確（需為 09 開頭 10 碼手機）');
+    }
+
+    // =========================
+    // 7) 寵物種類（必選）
+    // =========================
     const petType = document.querySelector('input[name="petType"]:checked')?.value || '';
     if (!petType) {
-        alert('請選擇寵物種類');
-        // 無可 focus 的單一 input，就直接捲到毛孩區
-        focusAndScrollTo(petNameEl);
-        return false;
+        markGroupError('petType', '寵物種類：必選');
     }
 
-    // 4) pet name
+    // =========================
+    // 8) 寶貝名字（必填）
+    // =========================
+    const petName = (petNameEl?.value || '').trim();
     if (!petName) {
-        alert('請先填寫寶貝名字');
-        setFieldError(petNameEl, true);
-        focusAndScrollTo(petNameEl);
-        return false;
+        markInputError(petNameEl, '寶貝名字：必填');
     }
 
-    // 5) chip status
+    // =========================
+    // 9) 晶片狀態（必選）+ 有晶片需填號碼
+    // =========================
     const chipStatus = document.querySelector('input[name="chipStatus"]:checked')?.value || '';
     if (!chipStatus) {
-        alert('請選擇晶片狀態');
-        focusAndScrollTo(chipInputEl);
-        return false;
-    }
-
-    // 6) chip no if has chip
-    if (chipStatus === '有晶片') {
+        markGroupError('chipStatus', '晶片狀態：必選');
+    } else if (chipStatus === '有晶片') {
         const chipNo = (chipInputEl?.value || '').trim();
         if (!chipNo) {
-            alert('已選擇「有晶片」，請填寫晶片號碼');
-            setFieldError(chipInputEl, true);
-            focusAndScrollTo(chipInputEl);
-            return false;
+            markInputError(chipInputEl, '晶片號碼：已選「有晶片」需必填');
         }
     }
 
-    // 7) service item at least one
-    const services = Array.from(document.querySelectorAll('input[name="serviceItem"]:checked')).map(x => x.value);
-    if (!services.length) {
-        alert('請至少勾選 1 個服務項目');
-        // 捲到服務區（用 petNote 當錨點也行）
-        focusAndScrollTo(document.getElementById('otherServiceCheck') || petNameEl);
-        return false;
+    // =========================
+    // 10) 性別 / 結紮 / 攻擊性（必選）
+    // =========================
+    const sex = document.querySelector('input[name="petSex"]:checked')?.value || '';
+    if (!sex) markGroupError('petSex', '性別：必選');
+
+    const neuter = document.querySelector('input[name="petNeuter"]:checked')?.value || '';
+    if (!neuter) markGroupError('petNeuter', '是否結紮：必選');
+
+    const aggressive = document.querySelector('input[name="aggressive"]:checked')?.value || '';
+    if (!aggressive) markGroupError('aggressive', '具攻擊性：必選');
+
+    // =========================
+    // 11) 病史（必選）+ 選「有」需填內容
+    // =========================
+    const mh = document.querySelector('input[name="medicalHistoryHas"]:checked')?.value || '';
+    if (!mh) {
+        markGroupError('medicalHistoryHas', '過往病史（有/無）：必選');
+    } else if (mh === '有') {
+        const note = (medicalNoteEl?.value || '').trim();
+        if (!note) {
+            markInputError(medicalNoteEl, '病史內容：已選「有」需必填');
+        }
     }
 
-    // 若勾「其他項目」必填其他文字
-    const otherChecked = document.getElementById('otherServiceCheck')?.checked;
-    const otherText = (document.getElementById('otherServiceText')?.value || '').trim();
-    if (otherChecked && !otherText) {
-        alert('已勾選「其他項目」，請填寫其他項目內容');
-        const otherTextEl = document.getElementById('otherServiceText');
-        setFieldError(otherTextEl, true);
-        focusAndScrollTo(otherTextEl);
-        return false;
-    }
+    // =========================
+    // 12) 身體檢視四項（必選）
+    // =========================
+    const requireBodyCheck = (name, labelText) => {
+        const v = document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+        if (!v) markGroupError(name, `身體檢視：${labelText} 必選`);
+    };
+    requireBodyCheck('checkEye', '眼睛');
+    requireBodyCheck('checkEar', '耳朵');
+    requireBodyCheck('checkSkin', '皮膚');
+    requireBodyCheck('checkFur', '皮毛');
 
-    // 8) pickup time: either notify later OR time
+// =========================
+// 13) 服務項目（至少勾 1）+ 勾其他需填文字
+// =========================
+const services = Array.from(document.querySelectorAll('input[name="serviceItem"]:checked')).map(x => x.value);
+if (!services.length) {
+    const anchor = document.getElementById('serviceItemsGrid');
+    setFieldError(anchor, true);
+    addError('本次服務內容：至少勾選 1 個', anchor);
+}
+
+const otherChecked = document.getElementById('otherServiceCheck')?.checked;
+const otherTextEl = document.getElementById('otherServiceText');
+const otherText = (otherTextEl?.value || '').trim();
+if (otherChecked && !otherText) {
+    markInputError(otherTextEl, '其他項目內容：已勾選「其他項目」需必填');
+}
+
+    // =========================
+    // 14) 接回時間（填時間 或 勾另行通知）
+    // =========================
     const notifyLater = !!notifyLaterEl?.checked;
     const pickupTime = (pickupTimeEl?.value || '').trim();
     if (!notifyLater && !pickupTime) {
-        alert('請填寫預計接回時間，或勾選「另行通知」');
-        setFieldError(pickupTimeEl, true);
-        focusAndScrollTo(pickupTimeEl);
-        return false;
+        markInputError(pickupTimeEl, '預計接回時間：請填時間或勾選「另行通知」');
     }
 
-    // 9) payment method required
+    // =========================
+    // 15) 支付方式（必選）+ 其他需填 + 金額>0
+    // =========================
     const payMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
     if (!payMethod) {
-        alert('請選擇支付方式');
-        focusAndScrollTo(paymentAmountEl);
-        return false;
-    }
-
-    // 10) payment other text required if payMethod === 其他
-    if (payMethod === '其他') {
+        markGroupError('paymentMethod', '支付方式：必選');
+    } else if (payMethod === '其他') {
         const v = (paymentOtherEl?.value || '').trim();
-        if (!v) {
-            alert('已選擇「其他」支付方式，請輸入支付方式');
-            setFieldError(paymentOtherEl, true);
-            focusAndScrollTo(paymentOtherEl);
-            return false;
-        }
+        if (!v) markInputError(paymentOtherEl, '其他支付方式：已選「其他」需必填');
     }
 
-    // 11) payment amount required > 0
     const amount = parseInt(paymentAmountEl?.value || '0', 10);
     if (!Number.isFinite(amount) || amount <= 0) {
-        alert('請填寫支付金額（需大於 0）');
-        setFieldError(paymentAmountEl, true);
-        focusAndScrollTo(paymentAmountEl);
-        return false;
+        markInputError(paymentAmountEl, '支付金額：必填且需大於 0');
     }
 
-    // 12) agree + signature
+    // =========================
+    // 16) 同意 + 簽名（必填）
+    // =========================
     if (!agreeEl?.checked) {
-        alert('請先勾選「本人已詳閱並同意以上條款內容」');
-        focusAndScrollTo(agreeEl);
-        return false;
+        setFieldError(agreeEl, true);
+        addError('同意條款：必勾選', agreeEl);
     }
+
     if (!signatureDataUrl) {
-        alert('請先完成簽名');
-        focusAndScrollTo(document.getElementById('btnOpenSignature'));
+        setFieldError(signBtnEl, true);
+        addError('飼主簽名：必須完成簽名', signBtnEl);
+    }
+
+    // =========================
+    // 最終：一次提示 + 捲到第一個錯
+    // =========================
+    if (errors.length) {
+        alert('請先完成以下必填/修正：\n\n' + errors.map((t, i) => `${i + 1}. ${t}`).join('\n'));
+        focusAndScrollTo(firstEl);
         return false;
     }
 
     return true;
 }
-
 function getServiceItems() {
     return Array.from(document.querySelectorAll(`input[name="serviceItem"]:checked`)).map(x => x.value);
 }
@@ -1352,10 +1464,10 @@ function collectPayload() {
         phone: phone,
         owner_name: document.getElementById('ownerName').value || '',
         email: document.getElementById('ownerEmail').value || '',
-        id_no: document.getElementById('ownerId').value || '',
+        id_no: (document.getElementById('ownerId').value || '').toUpperCase(),
         address: document.getElementById('ownerAddress').value || '',
         emergency_contact: document.getElementById('emergencyContact').value || '',
-        emergency_phone: document.getElementById('emergencyPhone').value || '',
+        emergency_phone: normalizePhone(document.getElementById('emergencyPhone').value || ''),
         hospital: document.getElementById('hospital').value || '',
 
         // pet
@@ -1568,6 +1680,7 @@ function confirmSignature() {
     document.getElementById('btnOpenSignature').classList.add('hidden');
     document.getElementById('signatureResult').classList.remove('hidden');
     document.getElementById('clearSignatureResult').classList.remove('hidden');
+    setFieldError(document.getElementById('btnOpenSignature'), false);
 
     closeSignatureModal();
 }
@@ -1742,6 +1855,121 @@ function initFormEnhancements() {
         notifyLaterCheck.addEventListener('change', syncPickupTime);
         syncPickupTime();
     }
+    // 身分證：首字母自動轉大寫（也順便把整串轉大寫較乾淨）
+const ownerIdEl = document.getElementById('ownerId');
+if (ownerIdEl) {
+  const toUpper = () => {
+    ownerIdEl.value = (ownerIdEl.value || '').toUpperCase();
+  };
+  ownerIdEl.addEventListener('input', toUpper);
+  ownerIdEl.addEventListener('blur', toUpper);
+}
+        // =========================
+    // ✅ 即時清除紅框（使用者一改正就取消）
+    // =========================
+const bindOnce = (el, evt, handler, key = evt) => {
+    if (!el) return;
+    el.__sdBound ||= {};
+    const k = `${evt}:${key}`;
+    if (el.__sdBound[k]) return;
+    el.__sdBound[k] = 1;
+    el.addEventListener(evt, handler);
+};
+// 服務項目：只要有任何勾選變更，就清掉服務區紅框
+document.querySelectorAll('input[name="serviceItem"]').forEach(chk => {
+    bindOnce(chk, 'change', () => {
+        setFieldError(document.getElementById('serviceItemsGrid'), false);
+    }, 'clear_serviceItemsGrid');
+});
+
+    const getRadioGroupWrap = (name) => {
+        const first = document.querySelector(`input[name="${name}"]`);
+        return first ? (first.closest('.grid') || first.parentElement || first) : null;
+    };
+
+    const clearInputErrorOnEdit = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        bindOnce(el, 'input', () => setFieldError(el, false), `clear_${id}_input`);
+        bindOnce(el, 'change', () => setFieldError(el, false), `clear_${id}_change`);
+    };
+
+    const clearGroupErrorOnChange = (name) => {
+        const radios = document.querySelectorAll(`input[name="${name}"]`);
+        if (!radios.length) return;
+        radios.forEach(r => {
+            bindOnce(r, 'change', () => {
+                const wrap = getRadioGroupWrap(name);
+                setFieldError(wrap, false);
+            }, `clear_group_${name}`);
+        });
+    };
+
+    // inputs（你有標紅的欄位）
+[
+  'phoneInput', 'ownerName', 'ownerId', 'ownerAddress',
+  'emergencyContact', 'emergencyPhone',
+  'petName', 'chipInput',
+  'otherServiceText', 'pickupTimeInput',
+  'paymentOtherText', 'paymentAmount',
+  'medicalHistoryInput'
+].forEach(clearInputErrorOnEdit);
+
+    // radio 群組（你 validateFormBeforeSubmit 會標紅的群組）
+    [
+        'petType', 'chipStatus', 'petSex', 'petNeuter', 'aggressive', 'medicalHistoryHas',
+        'checkEye', 'checkEar', 'checkSkin', 'checkFur',
+        'paymentMethod'
+    ].forEach(clearGroupErrorOnChange);
+
+    // 同意勾選：勾了就清紅框
+    const agreeEl = document.getElementById('agreeCheckbox');
+    if (agreeEl) bindOnce(agreeEl, 'change', () => setFieldError(agreeEl, false), 'clear_agree');
+
+    // 簽名：只要點開簽名板先清掉（避免使用者覺得卡住）
+    const signBtn = document.getElementById('btnOpenSignature');
+    if (signBtn) bindOnce(signBtn, 'click', () => setFieldError(signBtn, false), 'clear_signature_btn');
+    // --- 依賴欄位：切換選項時同步清紅框 ---
+
+// 晶片狀態切換 → 清 chipInput 紅框
+document.querySelectorAll('input[name="chipStatus"]').forEach(r => {
+    bindOnce(r, 'change', () => {
+        setFieldError(document.getElementById('chipInput'), false);
+    }, 'dep_chipInput');
+});
+
+// 病史有無切換 → 清 medicalHistoryInput 紅框
+document.querySelectorAll('input[name="medicalHistoryHas"]').forEach(r => {
+    bindOnce(r, 'change', () => {
+        setFieldError(document.getElementById('medicalHistoryInput'), false);
+    }, 'dep_medicalHistoryInput');
+});
+
+// 支付方式切換 → 若不是「其他」也清 paymentOtherText 紅框
+document.querySelectorAll('input[name="paymentMethod"]').forEach(r => {
+    bindOnce(r, 'change', () => {
+        const checked = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
+        if (checked !== '其他') {
+            setFieldError(document.getElementById('paymentOtherText'), false);
+        }
+    }, 'dep_paymentOtherText');
+});
+
+// 勾選「另行通知」→ 清 pickupTimeInput 紅框
+const notifyLater = document.getElementById('notifyLaterCheck');
+if (notifyLater) {
+    bindOnce(notifyLater, 'change', () => {
+        if (notifyLater.checked) setFieldError(document.getElementById('pickupTimeInput'), false);
+    }, 'dep_pickupTimeInput');
+}
+
+// 取消勾選「其他項目」→ 清 otherServiceText 紅框
+const otherSvc = document.getElementById('otherServiceCheck');
+if (otherSvc) {
+    bindOnce(otherSvc, 'change', () => {
+        if (!otherSvc.checked) setFieldError(document.getElementById('otherServiceText'), false);
+    }, 'dep_otherServiceText');
+}
 }
 function router(view) {
     const home = document.getElementById('view-home');
@@ -1760,6 +1988,53 @@ function router(view) {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     lucide.createIcons();
+}function gotoAdminPage() {
+    const url = new URL('./admin.html', window.location.href);
+    window.location.assign(url.toString());
+}
+
+function bindAdminShortcut() {
+    const el = document.getElementById('heroLogo');
+    if (!el) return;
+
+    // 桌面/部分手機瀏覽器支援 dblclick
+    el.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        gotoAdminPage();
+    });
+
+    // 手機/PWA：自做雙點偵測（避免 dblclick 在 touch 不觸發）
+    let lastTap = 0;
+    let lastX = 0;
+    let lastY = 0;
+    const THRESHOLD_MS = 350;
+    const MAX_DIST = 25;
+
+    const onTap = (e) => {
+        const now = Date.now();
+        const point = e.changedTouches?.[0] || e;
+        const x = point?.clientX ?? 0;
+        const y = point?.clientY ?? 0;
+
+        const isDouble =
+            (now - lastTap) < THRESHOLD_MS &&
+            Math.hypot(x - lastX, y - lastY) < MAX_DIST;
+
+        if (isDouble) {
+            lastTap = 0;
+            gotoAdminPage();
+            return;
+        }
+
+        lastTap = now;
+        lastX = x;
+        lastY = y;
+    };
+
+    // pointerup：大多數現代瀏覽器/PWA 可用
+    el.addEventListener('pointerup', onTap);
+    // touchend：iOS 保險
+    el.addEventListener('touchend', onTap, { passive: true });
 }
 
 function init() {
@@ -1767,6 +2042,7 @@ function init() {
     renderTerms();
     lucide.createIcons();
     bindSignatureEvents();
+    bindAdminShortcut();
 
     router('home');
     initFormEnhancements();
@@ -1895,5 +2171,6 @@ window.addEventListener('DOMContentLoaded', init);
         </div>
     </div>
 </div>
+<div class="hidden ring-2 ring-sd-peach ring-offset-2 ring-offset-white border-sd-peach rounded-xl"></div>
 </body>
 </html>

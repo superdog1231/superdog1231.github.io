@@ -295,106 +295,113 @@
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
     <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="w-full max-w-3xl bg-white rounded-cute shadow-jelly border border-sd-mint/20 overflow-hidden flex flex-col max-h-[90vh]">
-        <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between">
-          <div>
-            <div class="text-xs font-black text-sd-sub">服務紀錄詳情</div>
-            <div id="detailTitle" class="font-black text-sd-text"></div>
-          </div>
-          <button id="btnCloseDetail" class="btn-jelly w-10 h-10 rounded-full bg-white border border-sd-mint/15 flex items-center justify-center text-sd-sub">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
+<div class="w-full max-w-3xl bg-white rounded-cute shadow-jelly border border-sd-mint/20 overflow-hidden flex flex-col max-h-[90vh]">
 
-        <div class="p-5 overflow-y-auto custom-scrollbar space-y-5">
-          <!-- status -->
-          <div class="rounded-2xl border border-sd-mint/10 bg-sd-bg p-4">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-black text-sd-sub">狀態：</span>
-                <span id="detailStatusBadge" class="badge b-pending">pending</span>
-              </div>
+  <!-- Header（你移上去的複製按鈕在這） -->
+  <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between gap-3">
+    <div class="min-w-0">
+      <div class="text-xs font-black text-sd-sub">服務紀錄詳情</div>
+      <div id="detailTitle" class="font-black text-sd-text truncate"></div>
+    </div>
 
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="pending">待處理</button>
-                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="confirmed">已確認</button>
-                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="completed">已完成</button>
-                <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="cancelled">已取消</button>
-              </div>
-            </div>
+    <div class="shrink-0 flex items-center gap-2">
+      <button id="btnCopyLine"
+        class="btn-jelly px-3 py-2 rounded-xl bg-sd-mint text-white font-black text-xs flex items-center gap-2">
+        <i data-lucide="copy" class="w-4 h-4"></i> 複製完工通知
+      </button>
 
-            <div class="mt-3">
-              <label class="block text-xs font-black text-sd-sub mb-1">店內備註（內部用）</label>
-              <textarea id="detailNote" rows="2" class="w-full px-3 py-2 rounded-xl border border-sd-mint/15 bg-white outline-none font-bold text-sm" placeholder="例如：需要加強安撫、下次提醒事項..."></textarea>
-              <div class="text-[10px] text-sd-sub font-bold mt-1">離開輸入框會自動儲存</div>
-            </div>
-          </div>
-
-          <!-- owner/pet -->
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-sd-mint/10 p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <i data-lucide="user" class="w-4 h-4 text-sd-mint"></i>
-                <h3 class="font-black text-sd-text">飼主</h3>
-              </div>
-              <div id="detailOwner" class="text-sm font-bold text-sd-text space-y-1"></div>
-            </div>
-
-            <div class="rounded-2xl border border-sd-mint/10 p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <i data-lucide="paw-print" class="w-4 h-4 text-sd-mint"></i>
-                <h3 class="font-black text-sd-text">毛孩</h3>
-              </div>
-              <div id="detailPet" class="text-sm font-bold text-sd-text space-y-1"></div>
-            </div>
-          </div>
-
-          <!-- service/payment -->
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="rounded-2xl border border-sd-mint/10 p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <i data-lucide="scissors" class="w-4 h-4 text-sd-mint"></i>
-                <h3 class="font-black text-sd-text">本次服務</h3>
-              </div>
-              <div id="detailService" class="text-sm font-bold text-sd-text space-y-1"></div>
-            </div>
-
-            <div class="rounded-2xl border border-sd-mint/10 p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <i data-lucide="wallet" class="w-4 h-4 text-sd-mint"></i>
-                <h3 class="font-black text-sd-text">付款資訊</h3>
-              </div>
-              <div id="detailPayment" class="text-sm font-bold text-sd-text space-y-1"></div>
-            </div>
-          </div>
-
-          <!-- signature -->
-          <div class="rounded-2xl border border-sd-mint/10 p-4">
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <div class="flex items-center gap-2">
-                <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
-                <h3 class="font-black text-sd-text">簽名</h3>
-              </div>
-            </div>
-            <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
-              <img id="detailSignatureImg" src="" alt="signature" class="max-h-[140px] object-contain" />
-            </div>
-          </div>
-
-          <!-- actions -->
-          <div class="grid sm:grid-cols-3 gap-3">
-            <button id="btnCopyLine" class="btn-jelly w-full bg-sd-mint text-white py-3 rounded-xl font-black flex items-center justify-center gap-2">
-              <i data-lucide="copy" class="w-4 h-4"></i> 複製 LINE 完工通知
-            </button>
-            <button id="btnDelete" class="btn-jelly w-full bg-white border border-sd-peach/40 text-sd-peach py-3 rounded-xl font-black flex items-center justify-center gap-2 hidden">
-              <i data-lucide="trash-2" class="w-4 h-4"></i> 刪除
-            </button>
-          </div>
-
-        </div>
-      </div>
+      <button id="btnCloseDetail"
+        class="btn-jelly w-10 h-10 rounded-full bg-white border border-sd-mint/15 flex items-center justify-center text-sd-sub">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
     </div>
   </div>
+
+  <!-- Body（內容要在同一個 container 裡） -->
+  <div class="p-5 overflow-y-auto custom-scrollbar space-y-5">
+    <!-- status -->
+    <div class="rounded-2xl border border-sd-mint/10 bg-sd-bg p-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-sd-sub">狀態：</span>
+          <span id="detailStatusBadge" class="badge b-pending">pending</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="pending">待處理</button>
+          <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="confirmed">已確認</button>
+          <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="completed">已完成</button>
+          <button class="btn-jelly px-3 py-2 rounded-xl text-xs font-black border border-sd-mint/15 bg-white text-sd-sub" data-status="cancelled">已取消</button>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="block text-xs font-black text-sd-sub mb-1">店內備註（內部用）</label>
+        <textarea id="detailNote" rows="2" class="w-full px-3 py-2 rounded-xl border border-sd-mint/15 bg-white outline-none font-bold text-sm" placeholder="例如：需要加強安撫、下次提醒事項..."></textarea>
+        <div class="text-[10px] text-sd-sub font-bold mt-1">離開輸入框會自動儲存</div>
+      </div>
+    </div>
+
+    <!-- owner/pet -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="user" class="w-4 h-4 text-sd-mint"></i>
+          <h3 class="font-black text-sd-text">飼主</h3>
+        </div>
+        <div id="detailOwner" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="paw-print" class="w-4 h-4 text-sd-mint"></i>
+          <h3 class="font-black text-sd-text">毛孩</h3>
+        </div>
+        <div id="detailPet" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+    </div>
+
+    <!-- service/payment -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="scissors" class="w-4 h-4 text-sd-mint"></i>
+          <h3 class="font-black text-sd-text">本次服務</h3>
+        </div>
+        <div id="detailService" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="wallet" class="w-4 h-4 text-sd-mint"></i>
+          <h3 class="font-black text-sd-text">付款資訊</h3>
+        </div>
+        <div id="detailPayment" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+    </div>
+
+    <!-- signature -->
+    <div class="rounded-2xl border border-sd-mint/10 p-4">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
+          <h3 class="font-black text-sd-text">簽名</h3>
+        </div>
+      </div>
+      <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
+        <img id="detailSignatureImg" src="" alt="signature" class="max-h-[140px] object-contain" />
+      </div>
+    </div>
+
+    <!-- actions -->
+    <div class="grid sm:grid-cols-3 gap-3">
+      <button id="btnDelete" class="btn-jelly w-full bg-white border border-sd-peach/40 text-sd-peach py-3 rounded-xl font-black flex items-center justify-center gap-2 hidden">
+        <i data-lucide="trash-2" class="w-4 h-4"></i> 刪除
+      </button>
+    </div>
+
+  </div>
+</div>
 
   <!-- Auth Confirm Modal (re-auth) -->
   <div id="authModal" class="fixed inset-0 z-[120] hidden">
@@ -482,6 +489,73 @@ function syncFilterUI() {
       if (status === "cancelled") return "已取消";
       return "待處理";
     }
+
+    function petTypeText(v) {
+  const s = (v ?? '').toString();
+  if (s === 'cat' || s === '貓咪') return '貓咪';
+  if (s === 'dog' || s === '狗狗') return '狗狗';
+  return s || '-';
+}
+
+function paymentMethodText(method, other) {
+  const m = (method ?? '').toString();
+  if (m === '其他' || m === 'other') return (other || '其他');
+  if (m === 'LINE Pay' || m === 'linepay' || m === 'LinePay') return 'LINE Pay';
+  if (m === '現金' || m === 'cash') return '現金';
+  return m || '-';
+}
+
+// =========================
+// 卡片標籤：攻擊性 / 病史 / 備註
+// =========================
+function isAggressive(payload) {
+  const v = (payload?.aggressive ?? '').toString().trim();
+  // 你的表單是 '是'/'否'，但也兼容舊資料可能是 '有攻擊性'
+  return v === '是' || v === '有攻擊性' || v.toLowerCase() === 'yes' || v === 'true';
+}
+
+function hasMedicalHistory(payload) {
+  // 你現在表單是 medical_history_has: '有'/'無'
+  const v = (payload?.medical_history_has ?? payload?.history_check ?? '').toString().trim();
+  return v === '有' || v === '有病史' || v.toLowerCase() === 'yes' || v === 'true';
+}
+
+function hasAnyNote(record, payload) {
+  const adminNote = (record?.admin_note ?? '').toString().trim();
+  const customerNote = (payload?.note ?? '').toString().trim();
+  const otherSvc = (payload?.other_service_text ?? payload?.otherServiceText ?? '').toString().trim();
+  return !!(adminNote || customerNote || otherSvc);
+}
+
+function buildHintTagsHtml(record, payload) {
+  const tags = [];
+
+  if (isAggressive(payload)) {
+    tags.push(`
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black border bg-sd-peach/15 text-sd-peach border-sd-peach/30">
+        <i data-lucide="zap" class="w-3.5 h-3.5"></i> 有攻擊性
+      </span>
+    `);
+  }
+
+  if (hasMedicalHistory(payload)) {
+    tags.push(`
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black border bg-sd-yellow/20 text-[#B45309] border-sd-yellow/40">
+        <i data-lucide="syringe" class="w-3.5 h-3.5"></i> 有病史
+      </span>
+    `);
+  }
+
+  if (hasAnyNote(record, payload)) {
+    tags.push(`
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black border bg-gray-100 text-gray-600 border-gray-200">
+        <i data-lucide="sticky-note" class="w-3.5 h-3.5"></i> 備註
+      </span>
+    `);
+  }
+
+  return tags.join('');
+}
 
     function TServiceItem(v) {
       const map = {
@@ -628,7 +702,7 @@ if (roleEl) roleEl.textContent = currentRole === "manager" ? "店長" : "員工"
       list.forEach(r => {
         const payload = r.payload || {};
         const ownerName = payload.owner_name || "-";
-        const petType = payload.pet_type === "cat" ? "貓咪" : "狗狗";
+        const petType = petTypeText(payload.pet_type);
         const items = Array.isArray(payload.service_items) ? payload.service_items : [];
         const itemsText = items.length ? items.map(TServiceItem).join("、") : "-";
         const pay = getPaymentAmount(payload);
@@ -652,11 +726,18 @@ div.innerHTML = `
           ${fmtDateTime(r.created_at)}
         </div>
 
-        <div class="text-xl font-black text-sd-text truncate">
-          ${r.pet_name || payload.pet_name || "-"}
-        </div>
+<div class="text-xl font-black text-sd-text truncate">
+  ${r.pet_name || payload.pet_name || "-"}
+</div>
 
-        <div class="mt-2 text-xs font-bold text-sd-sub flex flex-wrap gap-x-3 gap-y-1">
+${(() => {
+  const tagsHtml = buildHintTagsHtml(r, payload);
+  return tagsHtml
+    ? `<div class="mt-2 flex flex-wrap gap-2">${tagsHtml}</div>`
+    : '';
+})()}
+
+<div class="mt-2 text-xs font-bold text-sd-sub flex flex-wrap gap-x-3 gap-y-1">
           <span class="inline-flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i>${ownerName}</span>
           <span class="inline-flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5"></i>${r.phone || payload.phone || "-"}</span>
           <span class="inline-flex items-center gap-1"><i data-lucide="paw-print" class="w-3.5 h-3.5"></i>${petType}</span>
@@ -796,8 +877,16 @@ function renderCustomerModal(phone) {
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0">
           <div class="text-[11px] font-black text-sd-sub tracking-widest mb-1">${fmtDateTime(r.created_at)}</div>
-          <div class="text-lg font-black text-sd-text truncate">${pet}</div>
-          <div class="text-xs font-bold text-sd-sub mt-1">✂️ ${(Array.isArray(payload.service_items) ? payload.service_items.map(TServiceItem).join("、") : "-")}</div>
+<div class="text-lg font-black text-sd-text truncate">${pet}</div>
+
+${(() => {
+  const tagsHtml = buildHintTagsHtml(r, payload);
+  return tagsHtml
+    ? `<div class="mt-2 flex flex-wrap gap-2">${tagsHtml}</div>`
+    : '';
+})()}
+
+<div class="text-xs font-bold text-sd-sub mt-1">✂️ ${(Array.isArray(payload.service_items) ? payload.service_items.map(TServiceItem).join("、") : "-")}</div>
         </div>
         <div class="text-right shrink-0">
           <div class="font-black text-sd-text">$${amount}</div>
@@ -904,7 +993,7 @@ function generateLineFinishMessage(payload) {
       $("detailOwner").innerHTML = ownerHtml;
 
       // pet
-      const petType = p.pet_type === "cat" ? "貓咪" : "狗狗";
+      const petType = petTypeText(p.pet_type);
       const petHtml = [
         buildKV("種類", petType),
         buildKV("名字", r.pet_name || p.pet_name),
@@ -936,7 +1025,7 @@ function generateLineFinishMessage(payload) {
 
       // payment
       const payHtml = [
-        buildKV("支付方式", p.payment_method === "other" ? (p.payment_other || "其他") : (p.payment_method || "-")),
+        buildKV("支付方式", paymentMethodText(p.payment_method, p.payment_other)),
         buildKV("金額", `$${getPaymentAmount(p)}`),
       ].join("");
       $("detailPayment").innerHTML = payHtml;
@@ -987,26 +1076,34 @@ function generateLineFinishMessage(payload) {
       if (idx >= 0) records[idx].admin_note = noteText;
     }
 
-    async function deleteRecord() {
-      if (!selectedRecord) return;
-      if (currentRole !== "manager") return toast("只有店長可刪除");
+async function deleteRecord() {
+  if (!selectedRecord) return;
+  if (currentRole !== "manager") return toast("只有店長可刪除");
 
-      const id = selectedRecord.id;
+  const id = selectedRecord.id;
 
-      const { error } = await sb
-        .from("grooming_agreements")
-        .delete()
-        .eq("id", id);
+  // ✅ 重要：用 select() 取回被刪掉的列，才能知道到底有沒有刪到
+  const { data, error } = await sb
+    .from("grooming_agreements")
+    .delete()
+    .eq("id", id)
+    .select("id");
 
-      if (error) return toast("刪除失敗：" + error.message);
+  if (error) return toast("刪除失敗：" + error.message);
 
-      records = records.filter(x => x.id !== id);
-      selectedRecord = null;
-      closeModal("detailModal");
-      renderRecords();
-      renderCustomers();
-      toast("✅ 已刪除");
-    }
+  // ✅ 沒刪到任何資料：最常見就是 RLS 擋掉 / 權限不足 / 條件沒命中
+  if (!data || data.length === 0) {
+    return toast("刪除失敗：沒有刪到任何資料（可能是權限不足/RLS 擋住）");
+  }
+
+  // local update
+  records = records.filter(x => x.id !== id);
+  selectedRecord = null;
+  closeModal("detailModal");
+  renderRecords();
+  renderCustomers();
+  toast("✅ 已刪除");
+}
 
     // =========================
     // Sensitive action re-auth
@@ -1269,6 +1366,49 @@ syncFilterUI();
 
       lucide.createIcons();
     });
+    // ✅ Service Worker：自動更新 + 更新後自動刷新（後台也註冊同一支）
+(function registerAutoUpdateSW() {
+  if (!('serviceWorker' in navigator)) return;
+
+  let refreshing = false;
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
+
+  window.addEventListener('load', async () => {
+    try {
+      // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
+      const reg = await navigator.serviceWorker.register('/sw.js?v=3');
+
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      });
+
+      setInterval(() => reg.update(), 10 * 60 * 1000);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update();
+      });
+    } catch (err) {
+      console.warn('Service Worker 註冊失敗：', err);
+    }
+  });
+})();
   </script>
+  <div class="hidden bg-sd-peach/15 text-sd-peach border-sd-peach/30 bg-sd-yellow/20 border-sd-yellow/40"></div>
 </body>
 </html>
