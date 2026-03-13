@@ -89,11 +89,15 @@
         </div>
       </a>
 
-      <div class="flex items-center gap-2">
-        <button id="btnSignOut" class="btn-jelly px-3 py-2 bg-white border border-sd-mint/20 text-sd-mint rounded-xl text-xs font-black hidden">
-          登出
-        </button>
-      </div>
+<div class="flex items-center gap-2">
+  <button id="btnChangePwd" class="btn-jelly px-3 py-2 bg-white border border-sd-mint/20 text-sd-mint rounded-xl text-xs font-black hidden">
+    修改密碼
+  </button>
+
+  <button id="btnSignOut" class="btn-jelly px-3 py-2 bg-white border border-sd-mint/20 text-sd-mint rounded-xl text-xs font-black hidden">
+    登出
+  </button>
+</div>
     </div>
   </header>
 
@@ -409,6 +413,56 @@
     </div>  
   </div>    
 
+  <!-- Change Password Modal（只有店長可開） -->
+<div id="pwdModal" class="fixed inset-0 z-[125] hidden">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="pwdModalBackdrop"></div>
+
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-cute shadow-jelly border border-sd-mint/20 p-6">
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 rounded-full bg-sd-mint/10 text-sd-mint flex items-center justify-center mx-auto mb-2">
+          <i data-lucide="key" class="w-6 h-6"></i>
+        </div>
+        <div class="font-black text-sd-text">修改密碼</div>
+        <div class="text-xs font-bold text-sd-sub mt-1">僅店長可操作</div>
+      </div>
+
+      <!-- target switch -->
+      <div class="flex bg-sd-bg p-1 rounded-2xl mb-4 border border-sd-mint/10">
+        <button id="btnPwdTargetManager" type="button"
+          class="flex-1 py-2 rounded-xl text-xs font-black bg-white text-sd-mint border border-sd-mint/10">
+          管理員
+        </button>
+        <button id="btnPwdTargetStaff" type="button"
+          class="flex-1 py-2 rounded-xl text-xs font-black text-sd-sub">
+          員工
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <input id="pwdOld" type="password"
+          class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg outline-none font-bold text-center tracking-widest"
+          placeholder="舊密碼">
+
+        <input id="pwdNew" type="password"
+          class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg outline-none font-bold text-center tracking-widest"
+          placeholder="新密碼（至少 6 碼）">
+
+        <input id="pwdConfirm" type="password"
+          class="w-full px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg outline-none font-bold text-center tracking-widest"
+          placeholder="確認新密碼">
+      </div>
+
+      <p id="pwdError" class="hidden text-center text-xs font-black text-sd-peach mt-3"></p>
+
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button id="btnPwdCancel" class="btn-jelly py-3 rounded-xl bg-gray-100 text-gray-500 font-black" type="button">取消</button>
+        <button id="btnPwdConfirm" class="btn-jelly py-3 rounded-xl bg-sd-mint text-white font-black" type="button">確認修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Auth Confirm Modal (re-auth) -->
   <div id="authModal" class="fixed inset-0 z-[120] hidden">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
@@ -440,7 +494,15 @@
     const SUPABASE_URL = "https://ncrkevxnmplvivletkts.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcmtldnhubXBsdml2bGV0a3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODIzMzUsImV4cCI6MjA4ODk1ODMzNX0.BgThp2Wy5LEQo-Evdx-A_XzuA3uGipTRRO4C4YlCTpI";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// ✅ 專門用來「驗舊密碼/改密碼」的 client（不影響主 sb 的登入狀態）
+const sbPwd = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    storageKey: "sb-pwd-client",
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false
+  }
+});
     // Accounts
     const MANAGER_EMAIL = "supesdog1231@gmail.com";
     const STAFF_EMAIL = "supesdog1231@staff.com";
@@ -618,7 +680,9 @@ if (emailEl) emailEl.textContent = email;
 
 const roleEl = $("userRoleText");
 if (roleEl) roleEl.textContent = currentRole === "manager" ? "店長" : "員工";      $("btnSignOut").classList.remove("hidden");
-
+// ✅ 只有店長看到「修改密碼」
+if (currentRole === "manager") $("btnChangePwd")?.classList.remove("hidden");
+else $("btnChangePwd")?.classList.add("hidden");
       return user;
     }
 
@@ -971,7 +1035,102 @@ ${(() => {
     function closeModal(id) {
       $(id).classList.add("hidden");
     }
+// =========================
+// Change Password（manager only）
+// =========================
+let pwdTargetEmail = MANAGER_EMAIL;
 
+function setPwdError(msg) {
+  const el = $("pwdError");
+  if (!el) return;
+  if (!msg) {
+    el.textContent = "";
+    el.classList.add("hidden");
+  } else {
+    el.textContent = msg;
+    el.classList.remove("hidden");
+  }
+}
+
+function syncPwdTargetUI() {
+  const btnM = $("btnPwdTargetManager");
+  const btnS = $("btnPwdTargetStaff");
+  if (!btnM || !btnS) return;
+
+  const activeCls = "bg-white text-sd-mint border border-sd-mint/10";
+  const inactiveCls = "text-sd-sub";
+
+  if (pwdTargetEmail === MANAGER_EMAIL) {
+    btnM.className = `flex-1 py-2 rounded-xl text-xs font-black ${activeCls}`;
+    btnS.className = `flex-1 py-2 rounded-xl text-xs font-black ${inactiveCls}`;
+  } else {
+    btnS.className = `flex-1 py-2 rounded-xl text-xs font-black ${activeCls}`;
+    btnM.className = `flex-1 py-2 rounded-xl text-xs font-black ${inactiveCls}`;
+  }
+}
+
+function openPwdModal() {
+  if (currentRole !== "manager") {
+    toast("只有店長可修改密碼");
+    return;
+  }
+
+  pwdTargetEmail = MANAGER_EMAIL;
+  syncPwdTargetUI();
+
+  $("pwdOld").value = "";
+  $("pwdNew").value = "";
+  $("pwdConfirm").value = "";
+  setPwdError("");
+
+  openModal("pwdModal");
+  $("pwdOld")?.focus();
+}
+
+async function handleChangePassword() {
+  if (currentRole !== "manager") return toast("只有店長可修改密碼");
+
+  setPwdError("");
+  const oldPwd = ($("pwdOld").value || "").trim();
+  const newPwd = ($("pwdNew").value || "").trim();
+  const confirmPwd = ($("pwdConfirm").value || "").trim();
+
+  if (!oldPwd) return setPwdError("請輸入舊密碼");
+  if (newPwd.length < 6) return setPwdError("新密碼至少 6 碼");
+  if (newPwd !== confirmPwd) return setPwdError("兩次新密碼不一致");
+
+  $("btnPwdConfirm").disabled = true;
+  $("btnPwdConfirm").classList.add("opacity-60");
+  $("btnPwdConfirm").textContent = "處理中...";
+
+try {
+  // ✅ 保險：先清掉 sbPwd 可能殘留的 session
+  try { await sbPwd.auth.signOut(); } catch {}
+
+  // 1) 先用目標帳號驗證舊密碼（不影響主 sb）
+  const { error: signErr } = await sbPwd.auth.signInWithPassword({
+    email: pwdTargetEmail,
+    password: oldPwd
+  });
+    if (signErr) throw new Error("舊密碼錯誤");
+
+    // 2) 更新目前 sbPwd 這個 session 的使用者密碼
+    const { error: upErr } = await sbPwd.auth.updateUser({ password: newPwd });
+    if (upErr) throw upErr;
+
+    // 3) 清掉 sbPwd 的 session
+    await sbPwd.auth.signOut();
+
+    toast("✅ 密碼更新成功");
+    closeModal("pwdModal");
+  } catch (e) {
+    setPwdError("修改失敗：" + (e?.message || "請稍後再試"));
+  } finally {
+    $("btnPwdConfirm").disabled = false;
+    $("btnPwdConfirm").classList.remove("opacity-60");
+    $("btnPwdConfirm").textContent = "確認修改";
+  }
+}
 function generateLineFinishMessage(payload) {
   const pet = payload?.pet_name || "毛孩";
   return `【美容完成通知】\n${pet} 已洗香香完成囉！請於營業時間前接回，逾時將依安親費計費，有任何問題都歡迎詢問～`;
@@ -1292,7 +1451,32 @@ $("loginPassword").addEventListener("keydown", (e) => {
 showPick();
 
       $("btnSignOut").addEventListener("click", signOut);
+// change password
+$("btnChangePwd")?.addEventListener("click", openPwdModal);
 
+$("pwdModalBackdrop")?.addEventListener("click", () => closeModal("pwdModal"));
+$("btnPwdCancel")?.addEventListener("click", () => closeModal("pwdModal"));
+
+$("btnPwdTargetManager")?.addEventListener("click", () => {
+  pwdTargetEmail = MANAGER_EMAIL;
+  syncPwdTargetUI();
+  setPwdError("");
+});
+
+$("btnPwdTargetStaff")?.addEventListener("click", () => {
+  pwdTargetEmail = STAFF_EMAIL;
+  syncPwdTargetUI();
+  setPwdError("");
+});
+
+$("btnPwdConfirm")?.addEventListener("click", handleChangePassword);
+
+// Enter 送出
+["pwdOld", "pwdNew", "pwdConfirm"].forEach(id => {
+  $(id)?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleChangePassword();
+  });
+});
       // tabs
       $("tabRecords").addEventListener("click", () => setTab("records"));
       $("tabCustomers").addEventListener("click", () => setTab("customers"));
@@ -1396,7 +1580,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=3');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=4');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
