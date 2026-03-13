@@ -605,9 +605,7 @@ function hasMedicalHistory(payload) {
 
 function hasAnyNote(record, payload) {
   const adminNote = (record?.admin_note ?? '').toString().trim();
-  const customerNote = (payload?.note ?? '').toString().trim();
-  const otherSvc = (payload?.other_service_text ?? payload?.otherServiceText ?? '').toString().trim();
-  return !!(adminNote || customerNote || otherSvc);
+  return !!adminNote;
 }
 
 function buildHintTagsHtml(record, payload) {
@@ -1242,21 +1240,25 @@ $("detailSignatureTime").textContent = fmtYMDHM(sigIso);
       renderRecords();
     }
 
-    async function updateNote(noteText) {
-      if (!selectedRecord) return;
-      const id = selectedRecord.id;
+async function updateNote(noteText) {
+  if (!selectedRecord) return;
+  const id = selectedRecord.id;
 
-      const { error } = await sb
-        .from("grooming_agreements")
-        .update({ admin_note: noteText })
-        .eq("id", id);
+  const { error } = await sb
+    .from("grooming_agreements")
+    .update({ admin_note: noteText })
+    .eq("id", id);
 
-      if (error) return toast("儲存備註失敗：" + error.message);
+  if (error) return toast("儲存備註失敗：" + error.message);
 
-      selectedRecord.admin_note = noteText;
-      const idx = records.findIndex(x => x.id === id);
-      if (idx >= 0) records[idx].admin_note = noteText;
-    }
+  selectedRecord.admin_note = noteText;
+  const idx = records.findIndex(x => x.id === id);
+  if (idx >= 0) records[idx].admin_note = noteText;
+
+  // ✅ 讓「備註」標籤即時出現/消失
+  renderRecords();
+  renderCustomers();
+}
 
 async function deleteRecord() {
   if (!selectedRecord) return;
@@ -1588,7 +1590,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=4');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=5');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
