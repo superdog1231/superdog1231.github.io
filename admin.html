@@ -1588,7 +1588,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=5');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=4');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
