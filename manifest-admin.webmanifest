@@ -1,0 +1,42 @@
+{
+  "name": "Super Dog｜後台管理",
+  "short_name": "SuperDog後台",
+  "description": "Super Dog 寵物美容 後台管理系統",
+  "lang": "zh-Hant",
+  "start_url": "",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5FFFD",
+  "theme_color": "#F5FFFD",
+  "icons": [
+    {
+      "src": "https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "開啟後台",
+      "short_name": "後台",
+      "url": "/admin.html",
+      "icons": [
+        {
+          "src": "https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+  <link rel="manifest" href="/manifest-admin.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Super Dog">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Superdog | 後台管理</title>
@@ -50,6 +54,10 @@
   </script>
 
   <style>
+    body { min-height: calc(var(--vh, 1vh) * 100); }
+    * { -webkit-tap-highlight-color: transparent; }
+body { overscroll-behavior-y: none; }
+input, select, textarea { font-size: 16px; }
     html, body {
       background: #F5FFFD;
       font-family: "Zen Maru Gothic", sans-serif;
@@ -1580,7 +1588,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=4');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=5');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -1610,4 +1618,14 @@ syncFilterUI();
   </script>
   <div class="hidden bg-sd-peach/15 text-sd-peach border-sd-peach/30 bg-sd-yellow/20 border-sd-yellow/40 text-[#B45309]"></div>
 </body>
+<script>
+(function setupVhFix(){
+  const setVh = () => {
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+  };
+  window.addEventListener('resize', setVh);
+  window.addEventListener('orientationchange', setVh);
+  setVh();
+})();
+</script>
 </html>

@@ -1,6 +1,10 @@
     <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Super Dog">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Superdog 寵物美容 | 定型化契約簽署</title>
@@ -59,6 +63,10 @@
     </script>
 
     <style>
+        body { min-height: calc(var(--vh, 1vh) * 100); }
+        * { -webkit-tap-highlight-color: transparent; }
+body { overscroll-behavior-y: none; }
+input, select, textarea { font-size: 16px; }
         html, body { 
             background: #F5FFFD; 
             font-family: "Zen Maru Gothic", sans-serif; 
@@ -2807,4 +2815,14 @@ window.addEventListener('DOMContentLoaded', init);
 </div>
 <div class="hidden ring-2 ring-sd-peach ring-offset-2 ring-offset-white border-sd-peach rounded-xl"></div>
 </body>
+<script>
+(function setupVhFix(){
+  const setVh = () => {
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+  };
+  window.addEventListener('resize', setVh);
+  window.addEventListener('orientationchange', setVh);
+  setVh();
+})();
+</script>
 </html>
