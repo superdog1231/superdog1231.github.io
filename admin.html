@@ -380,19 +380,22 @@
       </div>
     </div>
 
-    <!-- signature -->
-    <div class="rounded-2xl border border-sd-mint/10 p-4">
-      <div class="flex items-center justify-between gap-2 mb-2">
-        <div class="flex items-center gap-2">
-          <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
-          <h3 class="font-black text-sd-text">簽名</h3>
-        </div>
-      </div>
-      <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
-        <img id="detailSignatureImg" src="" alt="signature" class="max-h-[140px] object-contain" />
-      </div>
+<!-- signature -->
+<div class="rounded-2xl border border-sd-mint/10 p-4">
+  <div class="flex items-center justify-between gap-2 mb-2">
+    <div class="flex items-center gap-2">
+      <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
+      <h3 class="font-black text-sd-text">簽名</h3>
     </div>
+  </div>
 
+  <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
+    <img id="detailSignatureImg" src="" alt="signature" class="max-h-[140px] object-contain" />
+  </div>
+  <p class="text-xs font-bold text-sd-sub text-right mt-2">
+    簽署時間：<span id="detailSignatureTime">-</span>
+  </p>
+</div>
     <!-- actions -->
     <div class="grid sm:grid-cols-3 gap-3">
       <button id="btnDelete" class="btn-jelly w-full bg-white border border-sd-peach/40 text-sd-peach py-3 rounded-xl font-black flex items-center justify-center gap-2 hidden">
@@ -400,8 +403,11 @@
       </button>
     </div>
 
-  </div>
-</div>
+  </div> 
+</div>   
+
+    </div>  
+  </div>    
 
   <!-- Auth Confirm Modal (re-auth) -->
   <div id="authModal" class="fixed inset-0 z-[120] hidden">
@@ -475,6 +481,13 @@ function syncFilterUI() {
       const d = new Date(iso);
       return d.toLocaleString("zh-TW", { hour12: false });
     }
+    
+    function fmtYMDHM(iso) {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "-";
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
 
     function badgeClass(status) {
       if (status === "confirmed") return "badge b-confirmed";
@@ -1032,7 +1045,9 @@ function generateLineFinishMessage(payload) {
 
       // signature
       $("detailSignatureImg").src = r.signature_url || "";
-
+// ✅ signature time：優先用「按下確認簽名」的時間，沒有才 fallback created_at
+const sigIso = (p.signature_signed_at || "").toString().trim() || r.created_at;
+$("detailSignatureTime").textContent = fmtYMDHM(sigIso);
       // delete button (manager only)
       if (currentRole === "manager") $("btnDelete").classList.remove("hidden");
       else $("btnDelete").classList.add("hidden");
@@ -1409,6 +1424,6 @@ syncFilterUI();
   });
 })();
   </script>
-  <div class="hidden bg-sd-peach/15 text-sd-peach border-sd-peach/30 bg-sd-yellow/20 border-sd-yellow/40"></div>
+  <div class="hidden bg-sd-peach/15 text-sd-peach border-sd-peach/30 bg-sd-yellow/20 border-sd-yellow/40 text-[#B45309]"></div>
 </body>
 </html>

@@ -721,6 +721,7 @@
     </div>
 
     <input type="hidden" id="signatureData" name="signatureData">
+    <input type="hidden" id="signatureSignedAt" name="signatureSignedAt">
 </section>
 
 <button type="button" id="submitAgreementBtn" class="btn-jelly w-full bg-sd-mint text-white font-black text-lg py-4 rounded-cute shadow-jelly flex items-center justify-center gap-2 mt-4">
@@ -1515,7 +1516,8 @@ function collectPayload() {
         check_fur: getCheckedRadioValue('checkFur') || '',
         check_fur_note: document.getElementById('checkFurNote')?.value || '',
 
-        submitted_at: new Date().toISOString()
+        submitted_at: new Date().toISOString(),
+        signature_signed_at: document.getElementById('signatureSignedAt')?.value || ''
     };
 
     return payload;
@@ -1676,7 +1678,7 @@ function confirmSignature() {
     document.getElementById('signatureData').value = dataUrl;
     document.getElementById('signaturePreview').src = dataUrl;
     document.getElementById('signatureTime').textContent = timeText;
-
+    document.getElementById('signatureSignedAt').value = now.toISOString();
     document.getElementById('btnOpenSignature').classList.add('hidden');
     document.getElementById('signatureResult').classList.remove('hidden');
     document.getElementById('clearSignatureResult').classList.remove('hidden');
