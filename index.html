@@ -365,11 +365,11 @@
                     <label class="block text-sm font-bold text-sd-sub mb-2">是否結紮</label>
                     <div class="grid grid-cols-2 gap-2">
                         <label class="cursor-pointer">
-                            <input type="radio" name="petNeuter" value="已結紮" class="peer sr-only">
+                            <input type="radio" name="petNeuter" value="是" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">是</div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="petNeuter" value="未結紮" class="peer sr-only">
+                            <input type="radio" name="petNeuter" value="否" class="peer sr-only">
                             <div class="py-2 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">否</div>
                         </label>
                     </div>
@@ -501,7 +501,7 @@
                 <p class="text-sm font-black text-sd-text mb-2">4. 皮毛</p>
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <label class="cursor-pointer"><input type="radio" name="checkFur" value="正常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">正常</div></label>
-                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="異常" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">打結/寄生蟲</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="checkFur" value="打結/寄生蟲" class="peer sr-only"><div class="py-2 text-center rounded-lg border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-peach peer-checked:text-white transition-all">打結/寄生蟲</div></label>
                 </div>
                 <input type="text" id="checkFurNote" placeholder="異常描述（選填）" class="w-full px-3 py-2 rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
@@ -587,7 +587,7 @@
                 </label>
 
                 <label class="cursor-pointer">
-                    <input type="radio" name="paymentMethod" value="LinePay" class="peer sr-only">
+                    <input type="radio" name="paymentMethod" value="LINE Pay" class="peer sr-only">
                     <div class="py-3 text-center rounded-xl border border-sd-mint/20 bg-sd-bg text-sd-sub font-bold peer-checked:bg-sd-mint peer-checked:text-white transition-all">
                         LINE Pay
                     </div>
@@ -838,8 +838,8 @@ function renderPetListFromSupabase(customer, pets) {
     container.innerHTML = pets.map(pet => `
         <div onclick="selectPetFromSupabase('${customer.id}', '${pet.id}')" class="bg-white border-2 border-sd-mint/10 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-sd-mint transition-colors shadow-sm group">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-sd-bg rounded-full flex items-center justify-center text-sd-mint group-hover:bg-sd-mint group-hover:text-white transition-colors">
-                    <i data-lucide="${pet.pet_type === 'cat' ? 'cat' : 'dog'}" class="w-5 h-5"></i>
+<div class="w-10 h-10 bg-sd-bg rounded-full flex items-center justify-center text-sd-mint group-hover:bg-sd-mint group-hover:text-white transition-colors">
+  <i data-lucide="${(pet.pet_type === 'cat' || pet.pet_type === '貓咪') ? 'cat' : 'dog'}" class="w-5 h-5"></i>
                 </div>
                 <div>
                     <p class="font-black text-sd-text">${pet.name || ''}</p>
@@ -861,9 +861,28 @@ window.selectPetFromSupabase = async function(customerId, petId) {
         const customer = cache?.customer || null;
         const pet = cache?.petsById?.[petId] || null;
 
-        if (!customer || !pet) {
-            throw new Error("history cache missing");
-        }
+        if (!customer || !pet) throw new Error("history cache missing");
+
+        // 英文/舊值 -> 中文（避免勾選不到）
+        const toZh = (key, v) => {
+            const val = (v ?? '').toString();
+
+            const map = {
+                pet_type: { dog: '狗狗', cat: '貓咪', '狗狗': '狗狗', '貓咪': '貓咪' },
+                chip_status: { has: '有晶片', unknown: '號碼不詳', none: '無晶片', '有晶片': '有晶片', '號碼不詳': '號碼不詳', '無晶片': '無晶片' },
+                sex: { male: '公', female: '母', '公': '公', '母': '母' },
+                neuter: { yes: '是', no: '否', '是': '是', '否': '否', '已結紮': '是', '未結紮': '否' },
+                aggressive: { yes: '是', no: '否', '是': '是', '否': '否' },
+                medical_history_has: { yes: '有', no: '無', '有': '有', '無': '無' },
+                payment_method: { cash: '現金', linepay: 'LINE Pay', other: '其他', '現金': '現金', 'LINE Pay': 'LINE Pay', '其他': '其他', 'LinePay': 'LINE Pay' },
+                check: { normal: '正常', abnormal: '異常', knot: '打結/寄生蟲', '正常': '正常', '異常': '異常', '打結/寄生蟲': '打結/寄生蟲' }
+            };
+
+            if (key === 'check_eye' || key === 'check_ear' || key === 'check_skin' || key === 'check_fur') {
+                return map.check[val] || val;
+            }
+            return (map[key] && map[key][val]) ? map[key][val] : val;
+        };
 
         // ✅ 帶入飼主資料
         document.getElementById('phoneInput').value = customer.phone || '';
@@ -876,8 +895,9 @@ window.selectPetFromSupabase = async function(customerId, petId) {
         document.getElementById('hospital').value = customer.hospital || '';
 
         // ✅ 帶入毛孩資料
-        if (pet.pet_type) {
-            const typeRadio = document.querySelector(`input[name="petType"][value="${pet.pet_type}"]`);
+        const petTypeZh = toZh('pet_type', pet.pet_type);
+        if (petTypeZh) {
+            const typeRadio = document.querySelector(`input[name="petType"][value="${petTypeZh}"]`);
             if (typeRadio) typeRadio.checked = true;
         }
 
@@ -890,27 +910,33 @@ window.selectPetFromSupabase = async function(customerId, petId) {
         document.getElementById('petNote').value = pet.note || '';
 
         // 晶片狀態
-        if (pet.chip_status) {
-            const chipRadio = document.querySelector(`input[name="chipStatus"][value="${pet.chip_status}"]`);
+        const chipZh = toZh('chip_status', pet.chip_status);
+        if (chipZh) {
+            const chipRadio = document.querySelector(`input[name="chipStatus"][value="${chipZh}"]`);
             if (chipRadio) chipRadio.checked = true;
         }
         toggleChipInput();
 
         // 性別/結紮/攻擊性
-        if (pet.sex) {
-            const sexRadio = document.querySelector(`input[name="petSex"][value="${pet.sex}"]`);
+        const sexZh = toZh('sex', pet.sex);
+        if (sexZh) {
+            const sexRadio = document.querySelector(`input[name="petSex"][value="${sexZh}"]`);
             if (sexRadio) sexRadio.checked = true;
         }
-        if (pet.neuter) {
-            const neuterRadio = document.querySelector(`input[name="petNeuter"][value="${pet.neuter}"]`);
+
+        const neuterZh = toZh('neuter', pet.neuter);
+        if (neuterZh) {
+            const neuterRadio = document.querySelector(`input[name="petNeuter"][value="${neuterZh}"]`);
             if (neuterRadio) neuterRadio.checked = true;
         }
-        if (pet.aggressive) {
-            const aggRadio = document.querySelector(`input[name="aggressive"][value="${pet.aggressive}"]`);
+
+        const aggZh = toZh('aggressive', pet.aggressive);
+        if (aggZh) {
+            const aggRadio = document.querySelector(`input[name="aggressive"][value="${aggZh}"]`);
             if (aggRadio) aggRadio.checked = true;
         }
 
-        // 社會性（擇一）
+        // 社會性（擇一）— 本來就是中文就不用轉
         if (pet.social_type) {
             const socialRadio = document.querySelector(`input[name="socialType"][value="${pet.social_type}"]`);
             if (socialRadio) socialRadio.checked = true;
@@ -927,8 +953,9 @@ window.selectPetFromSupabase = async function(customerId, petId) {
         }
 
         // 病史
-        if (pet.medical_history_has) {
-            const mhRadio = document.querySelector(`input[name="medicalHistoryHas"][value="${pet.medical_history_has}"]`);
+        const mhZh = toZh('medical_history_has', pet.medical_history_has);
+        if (mhZh) {
+            const mhRadio = document.querySelector(`input[name="medicalHistoryHas"][value="${mhZh}"]`);
             if (mhRadio) mhRadio.checked = true;
         }
         document.getElementById('medicalHistoryInput').value = pet.medical_history_note || '';
@@ -950,13 +977,13 @@ window.selectPetFromSupabase = async function(customerId, petId) {
 
 const modal = document.getElementById('historyModal');
 
-function 正常izePhone(input) {
+function normalizePhone(input) {
     return String(input || "").replace(/[^\d]/g, "").trim(); // 只留數字
 }
 
 async function loadHistoryByPhone() {
     const phoneRaw = document.getElementById('phoneInput').value;
-    const phone = 正常izePhone(phoneRaw);
+    const phone = normalizePhone(phoneRaw);
 
     if (!phone) {
         alert("請先輸入電話");
@@ -1030,6 +1057,182 @@ function getCheckedRadioValue(name) {
 
 function getCheckedCheckboxValues(name) {
     return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(x => x.value);
+}
+
+// =========================
+// 必填驗證工具
+// =========================
+function setFieldError(el, isError) {
+    if (!el) return;
+    if (isError) {
+        el.classList.add('ring-2', 'ring-sd-peach', 'border-sd-peach');
+    } else {
+        el.classList.remove('ring-2', 'ring-sd-peach', 'border-sd-peach');
+    }
+}
+
+function focusAndScrollTo(el) {
+    if (!el) return;
+    el.focus?.();
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function validateFormBeforeSubmit() {
+    // 先清掉舊錯誤樣式
+    const idsToClear = [
+        'phoneInput', 'ownerName', 'petName', 'chipInput',
+        'paymentOtherText', 'paymentAmount', 'pickupTimeInput',
+        'otherServiceText'
+    ];
+    idsToClear.forEach(id => setFieldError(document.getElementById(id), false));
+
+    const phoneEl = document.getElementById('phoneInput');
+    const ownerEl = document.getElementById('ownerName');
+    const petNameEl = document.getElementById('petName');
+    const chipInputEl = document.getElementById('chipInput');
+    const pickupTimeEl = document.getElementById('pickupTimeInput');
+    const notifyLaterEl = document.getElementById('notifyLaterCheck');
+
+    const paymentOtherEl = document.getElementById('paymentOtherText');
+    const paymentAmountEl = document.getElementById('paymentAmount');
+
+    const agreeEl = document.getElementById('agreeCheckbox');
+    const signatureDataUrl = document.getElementById('signatureData')?.value || '';
+
+    const phone = normalizePhone(phoneEl?.value);
+    const ownerName = (ownerEl?.value || '').trim();
+    const petName = (petNameEl?.value || '').trim();
+
+    // 1) phone
+    if (!phone) {
+        alert('請先填寫聯絡電話');
+        setFieldError(phoneEl, true);
+        focusAndScrollTo(phoneEl);
+        return false;
+    }
+    // 台灣手機簡單檢查：10碼且09開頭（你若也要接受市話可拿掉這段）
+    if (!(phone.length === 10 && phone.startsWith('09'))) {
+        alert('聯絡電話格式不正確，請輸入 09 開頭的 10 碼手機號碼');
+        setFieldError(phoneEl, true);
+        focusAndScrollTo(phoneEl);
+        return false;
+    }
+
+    // 2) owner name
+    if (!ownerName) {
+        alert('請先填寫飼主姓名');
+        setFieldError(ownerEl, true);
+        focusAndScrollTo(ownerEl);
+        return false;
+    }
+
+    // 3) pet type (radio)
+    const petType = document.querySelector('input[name="petType"]:checked')?.value || '';
+    if (!petType) {
+        alert('請選擇寵物種類');
+        // 無可 focus 的單一 input，就直接捲到毛孩區
+        focusAndScrollTo(petNameEl);
+        return false;
+    }
+
+    // 4) pet name
+    if (!petName) {
+        alert('請先填寫寶貝名字');
+        setFieldError(petNameEl, true);
+        focusAndScrollTo(petNameEl);
+        return false;
+    }
+
+    // 5) chip status
+    const chipStatus = document.querySelector('input[name="chipStatus"]:checked')?.value || '';
+    if (!chipStatus) {
+        alert('請選擇晶片狀態');
+        focusAndScrollTo(chipInputEl);
+        return false;
+    }
+
+    // 6) chip no if has chip
+    if (chipStatus === '有晶片') {
+        const chipNo = (chipInputEl?.value || '').trim();
+        if (!chipNo) {
+            alert('已選擇「有晶片」，請填寫晶片號碼');
+            setFieldError(chipInputEl, true);
+            focusAndScrollTo(chipInputEl);
+            return false;
+        }
+    }
+
+    // 7) service item at least one
+    const services = Array.from(document.querySelectorAll('input[name="serviceItem"]:checked')).map(x => x.value);
+    if (!services.length) {
+        alert('請至少勾選 1 個服務項目');
+        // 捲到服務區（用 petNote 當錨點也行）
+        focusAndScrollTo(document.getElementById('otherServiceCheck') || petNameEl);
+        return false;
+    }
+
+    // 若勾「其他項目」必填其他文字
+    const otherChecked = document.getElementById('otherServiceCheck')?.checked;
+    const otherText = (document.getElementById('otherServiceText')?.value || '').trim();
+    if (otherChecked && !otherText) {
+        alert('已勾選「其他項目」，請填寫其他項目內容');
+        const otherTextEl = document.getElementById('otherServiceText');
+        setFieldError(otherTextEl, true);
+        focusAndScrollTo(otherTextEl);
+        return false;
+    }
+
+    // 8) pickup time: either notify later OR time
+    const notifyLater = !!notifyLaterEl?.checked;
+    const pickupTime = (pickupTimeEl?.value || '').trim();
+    if (!notifyLater && !pickupTime) {
+        alert('請填寫預計接回時間，或勾選「另行通知」');
+        setFieldError(pickupTimeEl, true);
+        focusAndScrollTo(pickupTimeEl);
+        return false;
+    }
+
+    // 9) payment method required
+    const payMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
+    if (!payMethod) {
+        alert('請選擇支付方式');
+        focusAndScrollTo(paymentAmountEl);
+        return false;
+    }
+
+    // 10) payment other text required if payMethod === 其他
+    if (payMethod === '其他') {
+        const v = (paymentOtherEl?.value || '').trim();
+        if (!v) {
+            alert('已選擇「其他」支付方式，請輸入支付方式');
+            setFieldError(paymentOtherEl, true);
+            focusAndScrollTo(paymentOtherEl);
+            return false;
+        }
+    }
+
+    // 11) payment amount required > 0
+    const amount = parseInt(paymentAmountEl?.value || '0', 10);
+    if (!Number.isFinite(amount) || amount <= 0) {
+        alert('請填寫支付金額（需大於 0）');
+        setFieldError(paymentAmountEl, true);
+        focusAndScrollTo(paymentAmountEl);
+        return false;
+    }
+
+    // 12) agree + signature
+    if (!agreeEl?.checked) {
+        alert('請先勾選「本人已詳閱並同意以上條款內容」');
+        focusAndScrollTo(agreeEl);
+        return false;
+    }
+    if (!signatureDataUrl) {
+        alert('請先完成簽名');
+        focusAndScrollTo(document.getElementById('btnOpenSignature'));
+        return false;
+    }
+
+    return true;
 }
 
 function getServiceItems() {
@@ -1125,7 +1328,7 @@ async function uploadSignatureAndGetUrl(signatureDataUrl, phone) {
         background: '#FFFFFF'
     });
 
-    const safePhone = 正常izePhone(phone || 'unknown');
+    const safePhone = normalizePhone(phone || 'unknown');
     const filePath = `superdog/${safePhone}/${Date.now()}_${Math.random().toString(36).slice(2)}.${compressed.ext}`;
 
     const { data, error } = await sb.storage
@@ -1142,7 +1345,7 @@ async function uploadSignatureAndGetUrl(signatureDataUrl, phone) {
 }
 
 function collectPayload() {
-    const phone = 正常izePhone(document.getElementById('phoneInput').value);
+    const phone = normalizePhone(document.getElementById('phoneInput').value);
 
     const payload = {
         // owner
@@ -1156,7 +1359,7 @@ function collectPayload() {
         hospital: document.getElementById('hospital').value || '',
 
         // pet
-        pet_type: getCheckedRadioValue('petType') || 'dog',
+        pet_type: getCheckedRadioValue('petType') || '狗狗',
         pet_name: document.getElementById('petName').value || '',
         breed: document.getElementById('petBreed').value || '',
         color: document.getElementById('petColor').value || '',
@@ -1211,16 +1414,11 @@ async function submitAgreement() {
     const agree = document.getElementById('agreeCheckbox');
     const signatureDataUrl = document.getElementById('signatureData').value;
 
-    const phone = 正常izePhone(document.getElementById('phoneInput').value);
+    const phone = normalizePhone(document.getElementById('phoneInput').value);
     const petName = (document.getElementById('petName').value || '').trim();
     const ownerName = (document.getElementById('ownerName').value || '').trim();
 
-    if (!phone) return alert('請先填寫聯絡電話');
-    if (!ownerName) return alert('請先填寫飼主姓名');
-    if (!petName) return alert('請先填寫寶貝名字');
-
-    if (!agree || !agree.checked) return alert('請先勾選「本人已詳閱並同意以上條款內容」');
-    if (!signatureDataUrl) return alert('請先完成簽名');
+    if (!validateFormBeforeSubmit()) return;
 
     if (!btn) return alert('送出按鈕不存在（submitAgreementBtn）');
 
@@ -1416,18 +1614,22 @@ function toggleChipInput() {
 
     const value = checkedChip.value;
 
-    if (value === 'has') {
+    if (value === '有晶片') {
         chipInput.disabled = false;
         chipInput.value = '';
         chipInput.placeholder = '請輸入晶片號碼';
-    } else if (value === 'unknown') {
+    } else if (value === '號碼不詳') {
         chipInput.disabled = true;
         chipInput.value = '';
         chipInput.placeholder = '已選擇：號碼不詳';
-    } else {
+    } else if (value === '無晶片') {
         chipInput.disabled = true;
         chipInput.value = '';
         chipInput.placeholder = '已選擇：無晶片';
+    } else {
+        // fallback（避免遇到舊資料）
+        chipInput.disabled = false;
+        chipInput.placeholder = '請輸入晶片號碼';
     }
 }
 
@@ -1484,7 +1686,7 @@ function initFormEnhancements() {
     if (paymentRadios.length && paymentOtherText) {
         const syncPaymentOther = () => {
             const checked = document.querySelector('input[name="paymentMethod"]:checked');
-            if (checked && checked.value === 'other') {
+            if (checked && checked.value === '其他') {
                 paymentOtherText.disabled = false;
                 paymentOtherText.placeholder = '請輸入其他支付方式';
             } else {
