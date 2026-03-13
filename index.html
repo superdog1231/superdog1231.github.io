@@ -728,6 +728,156 @@
     <i data-lucide="send" class="w-5 h-5"></i>
     確認送出同意書
 </button>
+
+<!-- ✅ 成功頁 view-success（送出後顯示） -->
+<section id="view-success" class="max-w-3xl mx-auto px-4 py-6 space-y-5 hidden">
+  <div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-jelly text-center">
+    <div id="successIconWrap" class="w-16 h-16 rounded-full bg-sd-mint/10 text-sd-mint flex items-center justify-center mx-auto mb-3">
+      <i id="successIcon" data-lucide="check" class="w-8 h-8"></i>
+    </div>
+
+    <h2 id="successTitle" class="text-xl font-black text-sd-text">已完成送出</h2>
+    <p id="successSub" class="text-xs font-bold text-sd-sub mt-2"></p>
+
+    <div id="successAlert" class="mt-4 text-left rounded-2xl border p-4 text-sm font-bold"></div>
+
+    <div class="grid gap-3 mt-5">
+      <button id="btnOpenFullContract" type="button"
+        class="btn-jelly w-full bg-sd-mint text-white font-black text-base py-4 rounded-cute shadow-jelly flex items-center justify-center gap-2">
+        <i data-lucide="camera" class="w-5 h-5"></i>
+        開啟完整契約（截圖保存）
+      </button>
+
+      <button id="btnBackHomeFromSuccess" type="button"
+        class="btn-jelly w-full bg-white border border-sd-mint/20 text-sd-mint font-black text-base py-3 rounded-cute flex items-center justify-center gap-2">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        返回首頁（完成）
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ 剛填寫的內容 -->
+  <div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
+    <div class="flex items-center gap-2 mb-4">
+      <i data-lucide="clipboard-list" class="w-5 h-5 text-sd-mint"></i>
+      <h3 class="font-black text-sd-text">本次填寫內容</h3>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="user" class="w-4 h-4 text-sd-mint"></i>
+          <div class="font-black text-sd-text">飼主</div>
+        </div>
+        <div id="successOwnerKV" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="paw-print" class="w-4 h-4 text-sd-mint"></i>
+          <div class="font-black text-sd-text">毛孩</div>
+        </div>
+        <div id="successPetKV" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4 mt-4">
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="scissors" class="w-4 h-4 text-sd-mint"></i>
+          <div class="font-black text-sd-text">本次服務</div>
+        </div>
+        <div id="successServiceKV" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+
+      <div class="rounded-2xl border border-sd-mint/10 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="wallet" class="w-4 h-4 text-sd-mint"></i>
+          <div class="font-black text-sd-text">付款資訊</div>
+        </div>
+        <div id="successPaymentKV" class="text-sm font-bold text-sd-text space-y-1"></div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-sd-mint/10 p-4 mt-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i data-lucide="pen-tool" class="w-4 h-4 text-sd-mint"></i>
+        <div class="font-black text-sd-text">簽名</div>
+      </div>
+      <div class="bg-white border border-sd-mint/10 rounded-2xl p-3 flex justify-center">
+        <img id="successSignatureImg" src="" alt="signature" class="max-h-[160px] object-contain" />
+      </div>
+      <p class="text-xs font-bold text-sd-sub text-right mt-2">
+        簽署時間：<span id="successSignedAt">-</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ✅ 乙方資訊（成功頁也要揭露，給截圖保存用） -->
+<div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
+  <div class="flex items-center gap-2 mb-4">
+    <i data-lucide="building-2" class="w-5 h-5 text-sd-mint"></i>
+    <h3 class="text-lg font-black text-sd-text">乙方資訊（Super Dog 寵物美容）</h3>
+  </div>
+
+  <div class="space-y-2 text-sm font-bold text-sd-text">
+    <div class="flex justify-between gap-4">
+      <span class="text-sd-sub">負責人</span>
+      <span class="text-right">戴君如</span>
+    </div>
+
+    <div class="flex justify-between gap-4">
+      <span class="text-sd-sub">統編</span>
+      <span class="text-right">41043003</span>
+    </div>
+
+    <div class="flex justify-between gap-4">
+      <span class="text-sd-sub">聯絡電話</span>
+      <span class="text-right">(03)313-3178</span>
+    </div>
+
+    <div class="flex justify-between gap-4">
+      <span class="text-sd-sub">地址</span>
+      <span class="text-right">桃園市蘆竹區上興路81號</span>
+    </div>
+
+    <div class="flex justify-between gap-4">
+      <span class="text-sd-sub">許可證號</span>
+      <span class="text-right">待提供</span>
+    </div>
+
+    <div class="border-t border-dashed border-sd-mint/15 my-2"></div>
+
+    <div class="flex justify-between gap-4 items-start">
+      <span class="text-sd-sub">營業時間</span>
+      <span class="text-right leading-relaxed">
+        AM10:00－PM6:00<br>
+        <span class="text-xs text-sd-sub">週五／週日 AM10:00－PM5:00（週一公休）</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="mt-4 bg-sd-bg border border-sd-mint/15 rounded-xl p-3">
+    <p class="text-xs font-black text-sd-mint mb-1">緊急送醫</p>
+    <p class="font-black text-sd-text">守足動物醫院</p>
+    <p class="text-sm text-sd-text font-bold">桃園市蘆竹區上興路61號</p>
+    <p class="text-sm text-sd-text font-bold">03 3233866</p>
+    <p class="text-xs text-sd-peach font-black mt-2">
+      若發生緊急狀況，一律先送至就近「守足動物醫院」救治，不耽誤黃金救援時間。
+    </p>
+  </div>
+</div>
+
+  <!-- ✅ 完整條款內容 -->
+  <div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
+    <div class="flex items-center gap-2 mb-4">
+      <i data-lucide="scale" class="w-5 h-5 text-sd-mint"></i>
+      <h3 class="font-black text-sd-text">完整條款內容</h3>
+    </div>
+
+    <div id="successTerms" class="text-sm text-sd-sub font-bold leading-relaxed space-y-2"></div>
+  </div>
+</section>
 </main>
 
     <div id="historyModal" class="fixed inset-0 z-[100] hidden">
@@ -1555,10 +1705,18 @@ async function submitAgreement() {
         });
         if (error) throw error;
 
-        alert('✅ 已送出！本次已新增一筆服務紀錄');
+        // ✅ 送出成功：進入成功頁（顯示內容 + 條款 + 簽名）
+        showSuccessView(payload, signatureUrl);
 
-        // 你要的話也可以送出後回首頁
-        router('home');
+        // ✅ 不管有沒有填 Email 都寄：
+        // 有填 → 寄客人 + BCC 店家
+        // 沒填 → 只寄店家留存
+        try {
+            await sendContractEmail(payload, signatureUrl);
+        } catch (e) {
+            console.error(e);
+            alert("⚠️ 資料已成功送出，但 Email 寄送失敗，請點「開啟完整契約」截圖保存。");
+        }
 
     } catch (err) {
         console.error(err);
@@ -1569,6 +1727,620 @@ async function submitAgreement() {
         btn.innerHTML = `<i data-lucide="send" class="w-5 h-5"></i> 確認送出同意書`;
         lucide.createIcons();
     }
+}
+
+// =========================
+// ✅ Success View（送出後顯示）
+// =========================
+let __lastSuccessPayload = null;
+let __lastSuccessSignatureUrl = "";
+let __lastSuccessTermsHtml = "";
+
+function fmtYMDHM_TW(iso) {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "-";
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function buildKVLine(label, value) {
+  const v = (value === null || value === undefined || value === "") ? "-" : value;
+  return `<div class="flex justify-between gap-3"><span class="text-sd-sub">${label}</span><span class="text-right text-sd-text">${v}</span></div>`;
+}
+
+function renderTermsHtmlForSuccess() {
+  // 你現在的條款來源是 CONFIG.terms（陣列）
+  if (!window.CONFIG || !Array.isArray(CONFIG.terms)) return "<p>（無條款內容）</p>";
+  return CONFIG.terms.map(t => `<p>${t}</p>`).join("");
+}
+
+function showSuccessView(payload, signatureUrl) {
+  __lastSuccessPayload = payload || {};
+  __lastSuccessSignatureUrl = signatureUrl || "";
+  __lastSuccessTermsHtml = renderTermsHtmlForSuccess();
+
+  const hasEmail = ((__lastSuccessPayload.email || "").toString().trim() !== "");
+
+  const titleEl = document.getElementById("successTitle");
+  const subEl = document.getElementById("successSub");
+  const alertEl = document.getElementById("successAlert");
+  const iconWrap = document.getElementById("successIconWrap");
+  const icon = document.getElementById("successIcon");
+
+  // header
+  if (subEl) {
+    subEl.textContent = `建議截圖保存（特別是未填寫 Email 時）`;
+  }
+
+  if (hasEmail) {
+    if (titleEl) titleEl.textContent = "提交成功！";
+    if (iconWrap) iconWrap.className = "w-16 h-16 rounded-full bg-sd-mint/10 text-sd-mint flex items-center justify-center mx-auto mb-3";
+    if (icon) icon.setAttribute("data-lucide", "mail-check");
+
+    if (alertEl) {
+      alertEl.className = "mt-4 text-left rounded-2xl border p-4 text-sm font-bold border-sd-mint/20 bg-sd-bg text-sd-text";
+      alertEl.innerHTML = `
+        <div class="flex items-center gap-2 font-black text-sd-mint mb-1">
+          <i data-lucide="mail" class="w-4 h-4"></i> 已填寫 Email
+        </div>
+        若你有需要留存，可點擊「開啟完整契約」並截圖保存。
+      `;
+    }
+  } else {
+    if (titleEl) titleEl.textContent = "提交成功！";
+    if (iconWrap) iconWrap.className = "w-16 h-16 rounded-full bg-red-100 text-red-500 flex items-center justify-center mx-auto mb-3";
+    if (icon) icon.setAttribute("data-lucide", "alert-triangle");
+
+    if (alertEl) {
+      alertEl.className = "mt-4 text-left rounded-2xl border p-4 text-sm font-bold border-red-200 bg-red-50 text-red-700";
+      alertEl.innerHTML = `
+        <div class="flex items-center gap-2 font-black mb-1">
+          <i data-lucide="alert-circle" class="w-4 h-4"></i> 未填寫 Email
+        </div>
+        你未填寫 Email，因此不會收到電子副本。<br>
+        請務必點擊「開啟完整契約」並截圖保存！
+      `;
+    }
+  }
+
+  // 填入 KV
+  const ownerKV = document.getElementById("successOwnerKV");
+  const petKV = document.getElementById("successPetKV");
+  const serviceKV = document.getElementById("successServiceKV");
+  const paymentKV = document.getElementById("successPaymentKV");
+
+  if (ownerKV) {
+    ownerKV.innerHTML = [
+      buildKVLine("姓名", __lastSuccessPayload.owner_name),
+      buildKVLine("電話", __lastSuccessPayload.phone),
+      buildKVLine("Email", __lastSuccessPayload.email),
+      buildKVLine("身分證", __lastSuccessPayload.id_no),
+      buildKVLine("地址", __lastSuccessPayload.address),
+      buildKVLine("緊急聯絡人", __lastSuccessPayload.emergency_contact),
+      buildKVLine("緊急電話", __lastSuccessPayload.emergency_phone),
+      buildKVLine("指定醫院", __lastSuccessPayload.hospital),
+    ].join("");
+  }
+
+  if (petKV) {
+    petKV.innerHTML = [
+      buildKVLine("種類", __lastSuccessPayload.pet_type),
+      buildKVLine("名字", __lastSuccessPayload.pet_name),
+      buildKVLine("品種", __lastSuccessPayload.breed),
+      buildKVLine("花色", __lastSuccessPayload.color),
+      buildKVLine("年齡", __lastSuccessPayload.age),
+      buildKVLine("晶片狀態", __lastSuccessPayload.chip_status),
+      buildKVLine("晶片號碼", __lastSuccessPayload.chip_no),
+      buildKVLine("性別", __lastSuccessPayload.sex),
+      buildKVLine("結紮", __lastSuccessPayload.neuter),
+      buildKVLine("具攻擊性", __lastSuccessPayload.aggressive),
+      buildKVLine("毛孩性格", __lastSuccessPayload.social_type),
+      buildKVLine("其他狀況", Array.isArray(__lastSuccessPayload.pet_status) ? __lastSuccessPayload.pet_status.join("、") : "-"),
+      buildKVLine("病史(有/無)", __lastSuccessPayload.medical_history_has),
+      buildKVLine("病史內容", __lastSuccessPayload.medical_history_note),
+      buildKVLine("不喜歡碰觸", __lastSuccessPayload.dislike_touch),
+      buildKVLine("備註", __lastSuccessPayload.note),
+    ].join("");
+  }
+
+  if (serviceKV) {
+    const items = Array.isArray(__lastSuccessPayload.service_items) ? __lastSuccessPayload.service_items : [];
+    serviceKV.innerHTML = [
+      buildKVLine("服務項目", items.length ? items.join("、") : "-"),
+      buildKVLine("其他項目", __lastSuccessPayload.other_service_text),
+      buildKVLine("預計接回", __lastSuccessPayload.notify_later_pickup ? "另行通知" : (__lastSuccessPayload.pickup_time || "-")),
+      buildKVLine("送出時間", fmtYMDHM_TW(__lastSuccessPayload.submitted_at)),
+    ].join("");
+  }
+
+  if (paymentKV) {
+    paymentKV.innerHTML = [
+      buildKVLine("支付方式", __lastSuccessPayload.payment_method === "其他" ? (__lastSuccessPayload.payment_other || "其他") : (__lastSuccessPayload.payment_method || "-")),
+      buildKVLine("金額", __lastSuccessPayload.payment_amount ? `$${__lastSuccessPayload.payment_amount}` : "-"),
+    ].join("");
+  }
+
+  // 簽名圖 + 簽署時間
+  const sigImg = document.getElementById("successSignatureImg");
+  const sigTime = document.getElementById("successSignedAt");
+  if (sigImg) sigImg.src = __lastSuccessSignatureUrl || "";
+  if (sigTime) sigTime.textContent = fmtYMDHM_TW(__lastSuccessPayload.signature_signed_at || __lastSuccessPayload.submitted_at);
+
+  // 條款
+  const termsEl = document.getElementById("successTerms");
+  if (termsEl) termsEl.innerHTML = __lastSuccessTermsHtml;
+
+  // 綁按鈕
+  document.getElementById("btnBackHomeFromSuccess")?.addEventListener("click", () => {
+    router("home");
+  });
+
+  document.getElementById("btnOpenFullContract")?.addEventListener("click", () => {
+    openFullContractWindow();
+  });
+
+  lucide.createIcons();
+  router("success");
+}
+
+function buildFullContractHtml(payload, signatureUrl, termsHtml) {
+  const LOGO_URL = "https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png";
+
+  // 文字安全：避免客人輸入特殊符號造成版面破掉
+  const esc = (v) => {
+    const s = (v ?? "").toString();
+    return s
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  };
+
+  const p = payload || {};
+  const sigUrl = signatureUrl || "";
+  const terms = termsHtml || "";
+
+  const shopName = "Super Dog 寵物美容";
+  const owner = "戴君如";
+  const ubn = "41043003";
+  const shopPhone = "(03)313-3178";
+  const shopAddress = "桃園市蘆竹區上興路81號";
+  const shopHours = "AM10:00－PM6:00（週五／週日 AM10:00－PM5:00，週一公休）";
+
+  const signedAtText = fmtYMDHM_TW(p.signature_signed_at || p.submitted_at);
+  const submittedAtText = fmtYMDHM_TW(p.submitted_at);
+
+  const serviceItems = Array.isArray(p.service_items) ? p.service_items : [];
+  const serviceItemsText = serviceItems.length ? serviceItems.map(esc).join("、") : "—";
+
+  const payMethodText =
+    (p.payment_method || "") === "其他"
+      ? (p.payment_other || "其他")
+      : (p.payment_method || "—");
+
+  const hasEmail = ((p.email || "").toString().trim() !== "");
+
+  const html = `
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>${shopName}｜契約副本</title>
+  <style>
+    :root{
+      --bg:#F5FFFD;
+      --card:#FFFFFF;
+      --text:#24413E;
+      --sub:#6D8B88;
+      --mint:#0F8F8A;
+      --mintDeep:#0B6D69;
+      --yellow:#F3B53F;
+      --peach:#FF8C7A;
+      --border: rgba(15,143,138,.18);
+      --shadow: 0 14px 34px rgba(15,143,138,.12);
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 18px;
+    }
+    .wrap{max-width: 980px; margin: 0 auto;}
+    .paw{
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(15,143,138,.06) 0 10px, transparent 11px),
+        radial-gradient(circle at 88% 82%, rgba(243,181,63,.14) 0 12px, transparent 13px);
+      background-attachment: fixed;
+      border-radius: 22px;
+      padding: 14px;
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .header{
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(15,143,138,.12);
+      background: linear-gradient(180deg, rgba(15,143,138,.08), rgba(255,255,255,0));
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+    }
+    .logo{
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      overflow:hidden;
+      border: 2px solid rgba(15,143,138,.18);
+      background: #fff;
+      flex: 0 0 auto;
+    }
+    .logo img{width:100%; height:100%; object-fit:cover;}
+    .brand-title{
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: .08em;
+      margin: 0;
+    }
+    .brand-sub{
+      margin: 2px 0 0;
+      color: var(--sub);
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .meta{
+      margin-top: 10px;
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--sub);
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,143,138,.16);
+      background: rgba(15,143,138,.06);
+    }
+    .pill b{color: var(--text);}
+    .content{padding: 16px 18px 20px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 740px){
+      .grid{grid-template-columns: 1fr;}
+    }
+    .section{
+      border: 1px solid rgba(15,143,138,.12);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+    }
+    .section h2{
+      margin: 0 0 10px;
+      font-size: 14px;
+      letter-spacing: .12em;
+      color: var(--mintDeep);
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .kvs{display:flex; flex-direction:column; gap: 6px; font-size: 13px;}
+    .kv{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px dashed rgba(15,143,138,.14);
+      padding-bottom: 6px;
+    }
+    .kv:last-child{border-bottom:none; padding-bottom:0;}
+    .k{color: var(--sub); font-weight: 900;}
+    .v{color: var(--text); font-weight: 900; text-align:right; word-break: break-word;}
+    .vendor{
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(15,143,138,.14);
+      background: rgba(15,143,138,.04);
+      padding: 12px;
+    }
+    .vendor .title{
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--mintDeep);
+      letter-spacing: .12em;
+      margin-bottom: 8px;
+    }
+    .vendor .rows{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .vendor .rows .item .lab{display:block; color: var(--sub); font-weight: 900; font-size: 11px;}
+    .vendor .rows .item .val{display:block; font-weight: 900;}
+    .vendor .rows .full{grid-column: 1 / -1;}
+    .alert{
+      margin-top: 12px;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid rgba(255,140,122,.35);
+      background: rgba(255,140,122,.10);
+      color: #9A3412;
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .alert.ok{
+      border-color: rgba(15,143,138,.28);
+      background: rgba(15,143,138,.08);
+      color: var(--mintDeep);
+    }
+    .sigBox{
+      margin-top: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(15,143,138,.12);
+      background: #fff;
+      padding: 12px;
+      text-align:center;
+    }
+    .sigBox img{
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-bottom: 2px solid rgba(36,65,62,.75);
+      padding-bottom: 8px;
+    }
+    .sigTime{margin-top: 8px; color: var(--sub); font-weight: 900; font-size: 12px;}
+    .terms{
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(15,143,138,.12);
+      background: #fff;
+      padding: 14px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+    .terms p{margin: 0 0 10px;}
+    .terms p:last-child{margin-bottom:0;}
+    .tip{
+      margin-top: 12px;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 900;
+      text-align:center;
+    }
+    @media print{
+      body{background:#fff; padding:0;}
+      .paw{background:none; padding:0;}
+      .card{box-shadow:none;}
+      .tip{display:none;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="paw">
+      <div class="card">
+        <div class="header">
+          <div class="brand">
+            <div class="logo">
+              <img src="${LOGO_URL}" alt="Superdog Logo">
+            </div>
+            <div>
+              <h1 class="brand-title">${shopName}</h1>
+              <div class="brand-sub">寵物美容定型化契約｜契約副本（建議截圖保存）</div>
+            </div>
+          </div>
+
+          <div class="meta">
+            <span class="pill">簽署時間：<b>${signedAtText}</b></span>
+            <span class="pill">送出時間：<b>${submittedAtText}</b></span>
+            <span class="pill">Email：<b>${esc(p.email || (hasEmail ? "" : "未填寫")) || "未填寫"}</b></span>
+          </div>
+
+          <div class="${hasEmail ? "alert ok" : "alert"}">
+            ${
+              hasEmail
+                ? "已填寫 Email（若你需要備份，仍建議截圖保存本頁）。"
+                : "你未填寫 Email，因此不會收到電子副本。請務必截圖保存本頁。"
+            }
+          </div>
+
+<div class="vendor">
+  <div class="title">乙方（店家）資訊</div>
+  <div class="rows">
+    <div class="item"><span class="lab">店家名稱</span><span class="val">${shopName}</span></div>
+    <div class="item"><span class="lab">負責人</span><span class="val">${owner}</span></div>
+
+    <div class="item"><span class="lab">統編</span><span class="val">${ubn}</span></div>
+    <div class="item"><span class="lab">許可證號</span><span class="val">待提供</span></div>
+
+    <div class="item"><span class="lab">聯絡電話</span><span class="val">${shopPhone}</span></div>
+    <div class="item"><span class="lab">營業時間</span><span class="val">${shopHours}</span></div>
+
+    <div class="item full"><span class="lab">地址</span><span class="val">${shopAddress}</span></div>
+  </div>
+
+  <div style="margin-top:10px;border-top:1px dashed rgba(15,143,138,.18);padding-top:10px;">
+    <div style="font-weight:900;color:var(--mintDeep);letter-spacing:.12em;font-size:12px;margin-bottom:8px;">
+      緊急送醫
+    </div>
+    <div style="font-weight:900;font-size:12px;color:var(--text);">守足動物醫院</div>
+    <div style="font-weight:800;font-size:12px;color:var(--sub);margin-top:2px;">桃園市蘆竹區上興路61號</div>
+    <div style="font-weight:900;font-size:12px;color:var(--text);margin-top:2px;">03 3233866</div>
+    <div style="margin-top:8px;font-weight:900;font-size:12px;color:#9A3412;background:rgba(255,140,122,.10);border:1px solid rgba(255,140,122,.28);border-radius:14px;padding:10px;line-height:1.7;">
+      若發生緊急狀況，一律先送至就近「守足動物醫院」救治，不耽誤黃金救援時間。
+    </div>
+  </div>
+</div>
+        <div class="content">
+
+<div class="grid">
+  <div class="section">
+    <h2>飼主資料</h2>
+    <div class="kvs">
+      <div class="kv"><div class="k">姓名</div><div class="v">${esc(p.owner_name) || "—"}</div></div>
+      <div class="kv"><div class="k">電話</div><div class="v">${esc(p.phone) || "—"}</div></div>
+      <div class="kv"><div class="k">Email</div><div class="v">${esc(p.email) || "—"}</div></div>
+      <div class="kv"><div class="k">身分證</div><div class="v">${esc(p.id_no) || "—"}</div></div>
+      <div class="kv"><div class="k">地址</div><div class="v">${esc(p.address) || "—"}</div></div>
+      <div class="kv"><div class="k">緊急聯絡人</div><div class="v">${esc(p.emergency_contact) || "—"}</div></div>
+      <div class="kv"><div class="k">緊急電話</div><div class="v">${esc(p.emergency_phone) || "—"}</div></div>
+      <div class="kv"><div class="k">指定醫院</div><div class="v">${esc(p.hospital) || "—"}</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>毛孩資料</h2>
+    <div class="kvs">
+      <div class="kv"><div class="k">種類</div><div class="v">${esc(p.pet_type) || "—"}</div></div>
+      <div class="kv"><div class="k">名字</div><div class="v">${esc(p.pet_name) || "—"}</div></div>
+      <div class="kv"><div class="k">品種</div><div class="v">${esc(p.breed) || "—"}</div></div>
+      <div class="kv"><div class="k">花色</div><div class="v">${esc(p.color) || "—"}</div></div>
+      <div class="kv"><div class="k">年齡</div><div class="v">${esc(p.age) || "—"}</div></div>
+
+      <div class="kv"><div class="k">晶片狀態</div><div class="v">${esc(p.chip_status) || "—"}</div></div>
+      <div class="kv"><div class="k">晶片號碼</div><div class="v">${esc(p.chip_no) || "—"}</div></div>
+
+      <div class="kv"><div class="k">性別</div><div class="v">${esc(p.sex) || "—"}</div></div>
+      <div class="kv"><div class="k">結紮</div><div class="v">${esc(p.neuter) || "—"}</div></div>
+      <div class="kv"><div class="k">具攻擊性</div><div class="v">${esc(p.aggressive) || "—"}</div></div>
+      <div class="kv"><div class="k">毛孩性格</div><div class="v">${esc(p.social_type) || "—"}</div></div>
+
+      <div class="kv">
+        <div class="k">其他狀況</div>
+        <div class="v">${
+          (Array.isArray(p.pet_status) && p.pet_status.length)
+            ? p.pet_status.map(esc).join("、")
+            : "—"
+        }</div>
+      </div>
+
+      <div class="kv"><div class="k">病史(有/無)</div><div class="v">${esc(p.medical_history_has) || "—"}</div></div>
+      <div class="kv"><div class="k">病史內容</div><div class="v">${esc(p.medical_history_note) || "—"}</div></div>
+      <div class="kv"><div class="k">不喜歡碰觸</div><div class="v">${esc(p.dislike_touch) || "—"}</div></div>
+      <div class="kv"><div class="k">備註</div><div class="v">${esc(p.note) || "—"}</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:12px;">
+  <h2>寵物身體狀態檢視（目視）</h2>
+  <div class="kvs">
+    <div class="kv"><div class="k">眼睛</div><div class="v">${esc(p.check_eye) || "—"}</div></div>
+    <div class="kv"><div class="k">眼睛（描述）</div><div class="v">${esc(p.check_eye_note) || "—"}</div></div>
+
+    <div class="kv"><div class="k">耳朵</div><div class="v">${esc(p.check_ear) || "—"}</div></div>
+    <div class="kv"><div class="k">耳朵（描述）</div><div class="v">${esc(p.check_ear_note) || "—"}</div></div>
+
+    <div class="kv"><div class="k">皮膚</div><div class="v">${esc(p.check_skin) || "—"}</div></div>
+    <div class="kv"><div class="k">皮膚（描述）</div><div class="v">${esc(p.check_skin_note) || "—"}</div></div>
+
+    <div class="kv"><div class="k">皮毛</div><div class="v">${esc(p.check_fur) || "—"}</div></div>
+    <div class="kv"><div class="k">皮毛（描述）</div><div class="v">${esc(p.check_fur_note) || "—"}</div></div>
+  </div>
+</div>
+
+          <div class="grid" style="margin-top:12px;">
+            <div class="section">
+              <h2>本次服務</h2>
+              <div class="kvs">
+                <div class="kv"><div class="k">服務項目</div><div class="v">${serviceItemsText}</div></div>
+                <div class="kv"><div class="k">其他項目</div><div class="v">${esc(p.other_service_text) || "—"}</div></div>
+                <div class="kv"><div class="k">預計接回</div><div class="v">${p.notify_later_pickup ? "另行通知" : (esc(p.pickup_time) || "—")}</div></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h2>付款資訊</h2>
+              <div class="kvs">
+                <div class="kv"><div class="k">支付方式</div><div class="v">${esc(payMethodText) || "—"}</div></div>
+                <div class="kv"><div class="k">金額</div><div class="v">${p.payment_amount ? "$" + esc(p.payment_amount) : "—"}</div></div>
+              </div>
+
+              <div class="sigBox">
+                ${
+                  sigUrl
+                    ? `<img src="${sigUrl}" alt="signature">`
+                    : `<div style="color:var(--sub);font-weight:900;font-size:12px;">（無簽名圖）</div>`
+                }
+                <div class="sigTime">簽署時間：${signedAtText}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" style="margin-top:12px;">
+            <h2>完整條款內容</h2>
+            <div class="terms">
+              ${terms}
+            </div>
+          </div>
+
+          <div class="tip">提示：請以手機「截圖」保存本頁；若需列印，可使用瀏覽器列印功能。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  return html;
+}
+
+async function sendContractEmail(payload, signatureUrl) {
+  const p = payload || {};
+  const termsHtml = renderTermsHtmlForSuccess(); // 你原本就有這個函數
+  const html = buildFullContractHtml(p, signatureUrl || "", termsHtml);
+
+  // ✅ 呼叫 Supabase Edge Function：resend-email
+  const { data, error } = await sb.functions.invoke("resend-email", {
+    body: {
+      to: (p.email || "").trim(),               // 沒填就空字串 → edge function 會只寄店家
+      html,
+      petNames: p.pet_name || "毛孩",
+    },
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+function openFullContractWindow() {
+  if (!__lastSuccessPayload) return;
+
+  const p = __lastSuccessPayload || {};
+  const sigUrl = __lastSuccessSignatureUrl || "";
+  const termsHtml = __lastSuccessTermsHtml || renderTermsHtmlForSuccess();
+
+  const html = buildFullContractHtml(p, sigUrl, termsHtml);
+
+  const win = window.open("", "_blank");
+  if (!win) return alert("彈出視窗被阻擋，請允許開啟視窗");
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
 }
 
 // 綁定送出按鈕
@@ -1976,16 +2748,23 @@ if (otherSvc) {
 function router(view) {
     const home = document.getElementById('view-home');
     const form = document.getElementById('view-form');
+    const success = document.getElementById('view-success');
     const navBackBtn = document.getElementById('navBackBtn');
 
+    // 先全部藏起來
+    if (home) home.classList.add('hidden');
+    if (form) form.classList.add('hidden');
+    if (success) success.classList.add('hidden');
+
     if (view === 'form') {
-        home.classList.add('hidden');
-        form.classList.remove('hidden');
-        navBackBtn.classList.remove('hidden');
+        if (form) form.classList.remove('hidden');
+        if (navBackBtn) navBackBtn.classList.remove('hidden');
+    } else if (view === 'success') {
+        if (success) success.classList.remove('hidden');
+        if (navBackBtn) navBackBtn.classList.add('hidden');
     } else {
-        form.classList.add('hidden');
-        home.classList.remove('hidden');
-        navBackBtn.classList.add('hidden');
+        if (home) home.classList.remove('hidden');
+        if (navBackBtn) navBackBtn.classList.add('hidden');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2095,7 +2874,7 @@ window.addEventListener('DOMContentLoaded', init);
 
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=4');
+            const reg = await navigator.serviceWorker.register('./sw.js?v=5');
 
             if (reg.waiting) {
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
