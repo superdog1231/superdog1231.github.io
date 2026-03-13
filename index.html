@@ -16,6 +16,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -543,15 +544,23 @@
 
         <div class="mt-4">
             <label class="block text-sm font-bold text-sd-sub mb-2">預計接回時間</label>
-                            <label class="flex items-center gap-2 text-sm font-bold text-sd-sub">
-                    <input type="checkbox" id="notifyLaterCheck" class="w-4 h-4 accent-sd-mint">
-                    另行通知
-                </label>
+
+            <label class="flex items-center gap-2 text-sm font-bold text-sd-sub">
+                <input type="checkbox" id="notifyLaterCheck" class="w-4 h-4 accent-sd-mint">
+                另行通知
+            </label>
 
             <div class="flex items-center gap-3">
                 <input type="time" id="pickupTimeInput" class="flex-1 px-4 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg text-sd-text font-bold">
             </div>
-            <p class="text-xs text-sd-peach font-bold mt-2">逾時 1 小時以上，依現場安親收費標準計費。</p>
+
+            <p class="text-xs text-sd-peach font-bold mt-2">逾時 1 小時以上，依現場逾時收費標準計費。</p>
+
+            <div class="mt-3 rounded-xl border border-sd-mint/15 bg-white p-3">
+                <p class="text-xs text-sd-sub font-bold leading-relaxed">
+                    若是因為，狗狗/貓貓 因特殊情況 想陪伴在身邊，一起完成服務，請另外來電洽詢預約時間
+                </p>
+            </div>
         </div>
 
         <div class="mt-4">
@@ -719,10 +728,10 @@
     <input type="hidden" id="signatureData" name="signatureData">
 </section>
 
-    <button type="button" class="btn-jelly w-full bg-sd-mint text-white font-black text-lg py-4 rounded-cute shadow-jelly flex items-center justify-center gap-2 mt-4">
-        <i data-lucide="send" class="w-5 h-5"></i>
-        確認送出同意書
-    </button>
+<button type="button" id="submitAgreementBtn" class="btn-jelly w-full bg-sd-mint text-white font-black text-lg py-4 rounded-cute shadow-jelly flex items-center justify-center gap-2 mt-4">
+    <i data-lucide="send" class="w-5 h-5"></i>
+    確認送出同意書
+</button>
 </main>
 
     <div id="historyModal" class="fixed inset-0 z-[100] hidden">
@@ -757,6 +766,11 @@
     </div>
 
     <script>
+// ✅ Supabase 連線
+const SUPABASE_URL = "https://ncrkevxnmplvivletkts.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jcmtldnhubXBsdml2bGV0a3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODIzMzUsImV4cCI6MjA4ODk1ODMzNX0.BgThp2Wy5LEQo-Evdx-A_XzuA3uGipTRRO4C4YlCTpI";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         const CONFIG = {
 shop: {
     fb: "https://www.facebook.com/peq7030y/?locale=zh_TW",
@@ -780,10 +794,6 @@ terms: [
     "7. 因本契約所生之訴訟，雙方合意以地方法院為管轄法院。",
     "8. 美容契約相關法條，附件如店內張貼之公告；如有需求請自行拍照留存。"
 ],
-            dummyPets: [
-                { id: 1, name: "球球", breed: "貴賓", owner: "王大明", phone: "0912345678", note: "喜歡抱抱熊造型，耳朵要留長" },
-                { id: 2, name: "豆豆", breed: "比熊", owner: "王大明", phone: "0912345678", note: "皮膚敏感，需用溫和洗劑" }
-            ]
         };
 
 function bindShopLinks() {
@@ -814,41 +824,446 @@ function renderTerms() {
     if (modalContent) modalContent.innerHTML = termsHtml;
 }
 
-        function renderPetList() {
-            const container = document.getElementById("petListContainer");
-            container.innerHTML = CONFIG.dummyPets.map(pet => `
-                <div onclick="selectPet(${pet.id})" class="bg-white border-2 border-sd-mint/10 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-sd-mint transition-colors shadow-sm group">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-sd-bg rounded-full flex items-center justify-center text-sd-mint group-hover:bg-sd-mint group-hover:text-white transition-colors">
-                            <i data-lucide="dog" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <p class="font-black text-sd-text">${pet.name}</p>
-                            <p class="text-[11px] font-bold text-sd-sub">${pet.breed} · ${pet.owner}</p>
-                        </div>
-                    </div>
-                    <button class="text-xs bg-sd-mint/10 text-sd-mint px-3 py-1.5 rounded-xl font-black group-hover:bg-sd-mint group-hover:text-white transition-colors">
-                        帶入
-                    </button>
+function renderPetListFromSupabase(customer, pets) {
+    const container = document.getElementById("petListContainer");
+
+    if (!pets || pets.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-sm font-bold text-sd-sub py-6">
+                有飼主資料，但尚未建立毛孩資料
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = pets.map(pet => `
+        <div onclick="selectPetFromSupabase('${customer.id}', '${pet.id}')" class="bg-white border-2 border-sd-mint/10 p-3 rounded-2xl flex items-center justify-between cursor-pointer hover:border-sd-mint transition-colors shadow-sm group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-sd-bg rounded-full flex items-center justify-center text-sd-mint group-hover:bg-sd-mint group-hover:text-white transition-colors">
+                    <i data-lucide="${pet.pet_type === 'cat' ? 'cat' : 'dog'}" class="w-5 h-5"></i>
                 </div>
-            `).join("");
+                <div>
+                    <p class="font-black text-sd-text">${pet.name || ''}</p>
+                    <p class="text-[11px] font-bold text-sd-sub">${pet.breed || ''} · ${customer.name || ''}</p>
+                </div>
+            </div>
+            <button class="text-xs bg-sd-mint/10 text-sd-mint px-3 py-1.5 rounded-xl font-black group-hover:bg-sd-mint group-hover:text-white transition-colors">
+                帶入
+            </button>
+        </div>
+    `).join("");
+}
+
+window.selectPetFromSupabase = async function(customerId, petId) {
+    try {
+        const { data: customer, error: cErr } = await sb
+            .from('customers')
+            .select('*')
+            .eq('id', customerId)
+            .single();
+        if (cErr) throw cErr;
+
+        const { data: pet, error: pErr } = await sb
+            .from('pets')
+            .select('*')
+            .eq('id', petId)
+            .single();
+        if (pErr) throw pErr;
+
+        // ✅ 帶入飼主資料
+        document.getElementById('phoneInput').value = customer.phone || '';
+        document.getElementById('ownerName').value = customer.name || '';
+        document.getElementById('ownerEmail').value = customer.email || '';
+        document.getElementById('ownerId').value = customer.id_no || '';
+        document.getElementById('ownerAddress').value = customer.address || '';
+        document.getElementById('emergencyContact').value = customer.emergency_contact || '';
+        document.getElementById('emergencyPhone').value = customer.emergency_phone || '';
+        document.getElementById('hospital').value = customer.hospital || '';
+
+        // ✅ 帶入毛孩資料
+        if (pet.pet_type) {
+            const typeRadio = document.querySelector(`input[name="petType"][value="${pet.pet_type}"]`);
+            if (typeRadio) typeRadio.checked = true;
         }
 
-        window.selectPet = function(id) {
-            const pet = CONFIG.dummyPets.find(p => p.id === id);
-            if(pet) {
-                document.getElementById('phoneInput').value = pet.phone;
-                document.getElementById('ownerName').value = pet.owner;
-                document.getElementById('petName').value = pet.name;
-                document.getElementById('petBreed').value = pet.breed;
-                document.getElementById('petNote').value = pet.note;
-                closeModal();
-            }
+        document.getElementById('petName').value = pet.name || '';
+        document.getElementById('petBreed').value = pet.breed || '';
+        document.getElementById('petColor').value = pet.color || '';
+        document.getElementById('petAge').value = (pet.age ?? '');
+        document.getElementById('chipInput').value = pet.chip_no || '';
+        document.getElementById('dislikeTouch').value = pet.dislike_touch || '';
+        document.getElementById('petNote').value = pet.note || '';
+
+        // 晶片狀態
+        if (pet.chip_status) {
+            const chipRadio = document.querySelector(`input[name="chipStatus"][value="${pet.chip_status}"]`);
+            if (chipRadio) chipRadio.checked = true;
+        }
+        toggleChipInput();
+
+        // 性別/結紮/攻擊性
+        if (pet.sex) {
+            const sexRadio = document.querySelector(`input[name="petSex"][value="${pet.sex}"]`);
+            if (sexRadio) sexRadio.checked = true;
+        }
+        if (pet.neuter) {
+            const neuterRadio = document.querySelector(`input[name="petNeuter"][value="${pet.neuter}"]`);
+            if (neuterRadio) neuterRadio.checked = true;
+        }
+        if (pet.aggressive) {
+            const aggRadio = document.querySelector(`input[name="aggressive"][value="${pet.aggressive}"]`);
+            if (aggRadio) aggRadio.checked = true;
+        }
+
+        // 社會性（擇一）
+        if (pet.social_type) {
+            const socialRadio = document.querySelector(`input[name="socialType"][value="${pet.social_type}"]`);
+            if (socialRadio) socialRadio.checked = true;
+        }
+
+        // 其他狀況（複選）
+        const statusChecks = document.querySelectorAll(`input[name="petStatus"]`);
+        statusChecks.forEach(ch => ch.checked = false);
+        if (Array.isArray(pet.pet_status)) {
+            pet.pet_status.forEach(v => {
+                const chk = document.querySelector(`input[name="petStatus"][value="${v}"]`);
+                if (chk) chk.checked = true;
+            });
+        }
+
+        // 病史
+        if (pet.medical_history_has) {
+            const mhRadio = document.querySelector(`input[name="medicalHistoryHas"][value="${pet.medical_history_has}"]`);
+            if (mhRadio) mhRadio.checked = true;
+        }
+        document.getElementById('medicalHistoryInput').value = pet.medical_history_note || '';
+        // 觸發你原本的 disabled/placeholder 邏輯
+        const medicalYes = document.getElementById('medicalYes');
+        const medicalNo = document.getElementById('medicalNo');
+        if (medicalYes && medicalNo) {
+            medicalYes.dispatchEvent(new Event('change'));
+            medicalNo.dispatchEvent(new Event('change'));
+        }
+
+        closeModal();
+    } catch (err) {
+        console.error(err);
+        alert('帶入失敗，請稍後再試');
+    }
+};
+const modal = document.getElementById('historyModal');
+
+function normalizePhone(input) {
+    return String(input || "").replace(/[^\d]/g, "").trim(); // 只留數字
+}
+
+async function loadHistoryByPhone() {
+    const phoneRaw = document.getElementById('phoneInput').value;
+    const phone = normalizePhone(phoneRaw);
+
+    if (!phone) {
+        alert("請先輸入電話");
+        return;
+    }
+
+    // 先打開 modal，顯示載入中
+    modal.classList.remove('hidden');
+    const container = document.getElementById("petListContainer");
+    container.innerHTML = `
+        <div class="text-center text-sm font-bold text-sd-sub py-6">
+            查詢中，請稍候...
+        </div>
+    `;
+
+    try {
+        // ✅ 改成 RPC（像宿洗）
+        const { data, error } = await sb.rpc('search_guest_history', {
+            phone_input: phone
+        });
+        if (error) throw error;
+
+        const customer = data && data.customer ? data.customer : null;
+        const pets = data && Array.isArray(data.pets) ? data.pets : [];
+
+        if (!customer) {
+            container.innerHTML = `
+                <div class="text-center text-sm font-bold text-sd-sub py-6">
+                    查無此電話的舊客紀錄
+                </div>
+            `;
+            return;
+        }
+
+        // 把查到的資料存在快取，供「帶入」使用（避免再查 DB）
+        window.__historyCache = {
+            customer,
+            petsById: Object.fromEntries((pets || []).map(p => [p.id, p]))
         };
 
-        const modal = document.getElementById('historyModal');
-        document.getElementById('searchPhoneBtn').addEventListener('click', () => modal.classList.remove('hidden'));
-      
+        renderPetListFromSupabase(customer, pets || []);
+        lucide.createIcons();
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+            <div class="text-center text-sm font-bold text-sd-peach py-6">
+                查詢失敗，請稍後再試
+            </div>
+        `;
+    }
+}
+
+document.getElementById('searchPhoneBtn').addEventListener('click', loadHistoryByPhone);      
+// ============ 送出同意書（每次 insert 一筆 grooming_agreements） ============
+
+// dataURL -> Blob
+function dataURLtoBlob(dataURL) {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], { type: mime });
+}
+
+function getCheckedRadioValue(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+}
+
+function getCheckedCheckboxValues(name) {
+    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(x => x.value);
+}
+
+function getServiceItems() {
+    return Array.from(document.querySelectorAll(`input[name="serviceItem"]:checked`)).map(x => x.value);
+}
+
+// ✅ Base64 簽名壓縮：轉成較小的圖片再上傳
+async function compressSignatureDataUrl(signatureDataUrl, options = {}) {
+    const {
+        maxWidth = 900,          // 簽名其實不需要太大
+        maxHeight = 450,
+        mimeType = 'image/webp', // webp 通常比 png 小很多
+        quality = 0.85,          // 0~1
+        background = '#FFFFFF'   // 轉 webp/jpg 時用白底（避免透明變黑）
+    } = options;
+
+    // 把 dataURL 轉成 Blob
+    const originalBlob = dataURLtoBlob(signatureDataUrl);
+
+    // 轉成 ImageBitmap（效能較好）
+    const bitmap = await createImageBitmap(originalBlob);
+
+    // 計算縮放比例（只縮小不放大）
+    const scale = Math.min(
+        1,
+        maxWidth / bitmap.width,
+        maxHeight / bitmap.height
+    );
+
+    const targetW = Math.max(1, Math.round(bitmap.width * scale));
+    const targetH = Math.max(1, Math.round(bitmap.height * scale));
+
+    // 畫到 canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW;
+    canvas.height = targetH;
+
+    const ctx = canvas.getContext('2d');
+
+    // 白底（簽名通常需要白底即可）
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, targetW, targetH);
+
+    // 繪製簽名
+    ctx.drawImage(bitmap, 0, 0, targetW, targetH);
+
+    // 產出壓縮後 blob
+    const compressedBlob = await new Promise((resolve) => {
+        canvas.toBlob(
+            (b) => resolve(b),
+            mimeType,
+            quality
+        );
+    });
+
+    // 有些瀏覽器對 webp 支援較怪，toBlob 可能回 null → fallback png
+    if (!compressedBlob) {
+        const fallbackBlob = await new Promise((resolve) => {
+            canvas.toBlob((b) => resolve(b), 'image/png');
+        });
+        return {
+            blob: fallbackBlob,
+            contentType: 'image/png',
+            ext: 'png',
+            width: targetW,
+            height: targetH
+        };
+    }
+
+    // 決定副檔名
+    const ext = mimeType.includes('webp') ? 'webp'
+             : mimeType.includes('jpeg') || mimeType.includes('jpg') ? 'jpg'
+             : 'png';
+
+    return {
+        blob: compressedBlob,
+        contentType: mimeType,
+        ext,
+        width: targetW,
+        height: targetH
+    };
+}
+
+async function uploadSignatureAndGetUrl(signatureDataUrl, phone) {
+    if (!signatureDataUrl) throw new Error('缺少簽名');
+
+    // ✅ 壓縮（你要的「線上壓縮」在這裡做）
+    const compressed = await compressSignatureDataUrl(signatureDataUrl, {
+        maxWidth: 900,
+        maxHeight: 450,
+        mimeType: 'image/webp',
+        quality: 0.85,
+        background: '#FFFFFF'
+    });
+
+    const safePhone = normalizePhone(phone || 'unknown');
+    const filePath = `superdog/${safePhone}/${Date.now()}_${Math.random().toString(36).slice(2)}.${compressed.ext}`;
+
+    const { data, error } = await sb.storage
+        .from('signatures')
+        .upload(filePath, compressed.blob, {
+            contentType: compressed.contentType,
+            upsert: false
+        });
+
+    if (error) throw error;
+
+    const { data: pub } = sb.storage.from('signatures').getPublicUrl(data.path);
+    return pub.publicUrl;
+}
+
+function collectPayload() {
+    const phone = normalizePhone(document.getElementById('phoneInput').value);
+
+    const payload = {
+        // owner
+        phone: phone,
+        owner_name: document.getElementById('ownerName').value || '',
+        email: document.getElementById('ownerEmail').value || '',
+        id_no: document.getElementById('ownerId').value || '',
+        address: document.getElementById('ownerAddress').value || '',
+        emergency_contact: document.getElementById('emergencyContact').value || '',
+        emergency_phone: document.getElementById('emergencyPhone').value || '',
+        hospital: document.getElementById('hospital').value || '',
+
+        // pet
+        pet_type: getCheckedRadioValue('petType') || 'dog',
+        pet_name: document.getElementById('petName').value || '',
+        breed: document.getElementById('petBreed').value || '',
+        color: document.getElementById('petColor').value || '',
+        age: document.getElementById('petAge').value || '',
+
+        chip_status: getCheckedRadioValue('chipStatus') || '',
+        chip_no: document.getElementById('chipInput').value || '',
+
+        sex: getCheckedRadioValue('petSex') || '',
+        neuter: getCheckedRadioValue('petNeuter') || '',
+        aggressive: getCheckedRadioValue('aggressive') || '',
+
+        social_type: getCheckedRadioValue('socialType') || '',
+        pet_status: getCheckedCheckboxValues('petStatus'),
+
+        medical_history_has: getCheckedRadioValue('medicalHistoryHas') || '',
+        medical_history_note: document.getElementById('medicalHistoryInput').value || '',
+
+        dislike_touch: document.getElementById('dislikeTouch').value || '',
+        note: document.getElementById('petNote').value || '',
+
+        // service
+        service_items: getServiceItems(),
+        other_service_text: document.getElementById('otherServiceText')?.value || '',
+
+        notify_later_pickup: !!document.getElementById('notifyLaterCheck')?.checked,
+        pickup_time: document.getElementById('pickupTimeInput')?.value || '',
+
+        // payment
+        payment_method: getCheckedRadioValue('paymentMethod') || '',
+        payment_other: document.getElementById('paymentOtherText')?.value || '',
+        payment_amount: document.getElementById('paymentAmount')?.value || '',
+
+        // body check（可選）
+        check_eye: getCheckedRadioValue('checkEye') || '',
+        check_eye_note: document.getElementById('checkEyeNote')?.value || '',
+        check_ear: getCheckedRadioValue('checkEar') || '',
+        check_ear_note: document.getElementById('checkEarNote')?.value || '',
+        check_skin: getCheckedRadioValue('checkSkin') || '',
+        check_skin_note: document.getElementById('checkSkinNote')?.value || '',
+        check_fur: getCheckedRadioValue('checkFur') || '',
+        check_fur_note: document.getElementById('checkFurNote')?.value || '',
+
+        submitted_at: new Date().toISOString()
+    };
+
+    return payload;
+}
+
+async function submitAgreement() {
+    const btn = document.getElementById('submitAgreementBtn');
+    const agree = document.getElementById('agreeCheckbox');
+    const signatureDataUrl = document.getElementById('signatureData').value;
+
+    const phone = normalizePhone(document.getElementById('phoneInput').value);
+    const petName = (document.getElementById('petName').value || '').trim();
+    const ownerName = (document.getElementById('ownerName').value || '').trim();
+
+    if (!phone) return alert('請先填寫聯絡電話');
+    if (!ownerName) return alert('請先填寫飼主姓名');
+    if (!petName) return alert('請先填寫寶貝名字');
+
+    if (!agree || !agree.checked) return alert('請先勾選「本人已詳閱並同意以上條款內容」');
+    if (!signatureDataUrl) return alert('請先完成簽名');
+
+    if (!btn) return alert('送出按鈕不存在（submitAgreementBtn）');
+
+    btn.disabled = true;
+    btn.classList.add('opacity-60');
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> 送出中...`;
+    lucide.createIcons();
+
+    try {
+        // 1) 上傳簽名 → 拿 signature_url
+        const signatureUrl = await uploadSignatureAndGetUrl(signatureDataUrl, phone);
+
+        // 2) 組 payload
+        const payload = collectPayload();
+
+        // 3) 呼叫 RPC：每次 insert 一筆 grooming_agreements
+        const { data, error } = await sb.rpc('submit_grooming_agreement', {
+            p_payload: payload,
+            p_signature_url: signatureUrl
+        });
+        if (error) throw error;
+
+        alert('✅ 已送出！本次已新增一筆服務紀錄');
+
+        // 你要的話也可以送出後回首頁
+        router('home');
+
+    } catch (err) {
+        console.error(err);
+        alert('❌ 送出失敗：' + (err.message || '請稍後再試'));
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+        btn.innerHTML = `<i data-lucide="send" class="w-5 h-5"></i> 確認送出同意書`;
+        lucide.createIcons();
+    }
+}
+
+// 綁定送出按鈕
+document.getElementById('submitAgreementBtn')?.addEventListener('click', submitAgreement);
         window.closeModal = function() {
             modal.classList.add('hidden');
         };
@@ -1151,7 +1566,6 @@ function router(view) {
 function init() {
     bindShopLinks();
     renderTerms();
-    renderPetList();
     lucide.createIcons();
     bindSignatureEvents();
 
@@ -1204,29 +1618,25 @@ window.addEventListener('DOMContentLoaded', init);
 
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=1');
+            const reg = await navigator.serviceWorker.register('./sw.js?v=2');
 
             if (reg.waiting) {
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
             }
 
-            // 監聽更新：一旦找到新 SW，安裝完成後就直接啟用
             reg.addEventListener('updatefound', () => {
                 const newWorker = reg.installing;
                 if (!newWorker) return;
 
                 newWorker.addEventListener('statechange', () => {
-                    // 新 SW 安裝完成，且目前有舊 SW 在控制頁面 => 叫新 SW 立刻啟用
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         newWorker.postMessage({ type: 'SKIP_WAITING' });
                     }
                 });
             });
 
-            // ✅ 週期性檢查更新（例如每 10 分鐘）
             setInterval(() => reg.update(), 10 * 60 * 1000);
 
-            // ✅ 使用者切回分頁時也檢查一次
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'visible') reg.update();
             });
