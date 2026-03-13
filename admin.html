@@ -19,6 +19,8 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
@@ -98,8 +100,8 @@ input, select, textarea { font-size: 16px; }
   <!-- Top Bar -->
 <header id="topBar" class="sticky top-0 z-40 bg-sd-bg/90 backdrop-blur border-b border-sd-mint/10 shadow-soft">    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
       <a href="./index.html" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
-          <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
+        <div class="w-10 h-10 rounded-full overflow-hidden bg-sd-mint/10 border-2 border-sd-mint/25 ring-2 ring-white shadow-soft flex items-center justify-center">
+          <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-contain p-1">
         </div>
         <div class="leading-tight">
           <p class="font-black text-sd-mint text-lg">Super Dog</p>
@@ -129,9 +131,9 @@ input, select, textarea { font-size: 16px; }
 <section id="viewLogin" class="hidden flex-1 flex items-center justify-center">
   <div class="w-full max-w-md">
     <div class="rounded-[2rem] bg-white border border-sd-mint/15 shadow-jelly px-7 py-8 text-center">
-      <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-white border-2 border-sd-mint/20 shadow-soft flex items-center justify-center">
+      <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-sd-mint/10 border-4 border-sd-mint/25 ring-4 ring-white shadow-jelly flex items-center justify-center">
         <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png"
-             alt="Super Dog Logo" class="w-full h-full object-contain p-2">
+             alt="Super Dog Logo" class="w-full h-full object-contain p-2 drop-shadow-md">
       </div>
 
       <div class="font-black text-sd-text text-xl">Super Dog 後台管理</div>
@@ -330,6 +332,11 @@ input, select, textarea { font-size: 16px; }
       <button id="btnCopyLine"
         class="btn-jelly px-3 py-2 rounded-xl bg-sd-mint text-white font-black text-xs flex items-center gap-2">
         <i data-lucide="copy" class="w-4 h-4"></i> 複製完工通知
+      </button>
+
+      <button id="btnExportExcel"
+        class="btn-jelly px-3 py-2 rounded-xl bg-white border border-sd-mint/20 text-sd-mint font-black text-xs flex items-center gap-2">
+        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> 匯出Excel
       </button>
 
       <button id="btnCloseDetail"
@@ -663,6 +670,389 @@ function buildHintTagsHtml(record, payload) {
       const n = parseInt(v || 0);
       return Number.isFinite(n) ? n : 0;
     }
+
+    function sanitizeFileName(name) {
+  return String(name || "").replace(/[\\\/:*?"<>|]/g, "_").trim();
+}
+
+function paymentAmountTextForAdmin(payload) {
+  const n = getPaymentAmount(payload || {});
+  return (n === 0) ? "現場評估報價" : `$${n}`;
+}
+
+function dataURLtoBlob(dataURL) {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], { type: mime });
+}
+
+function downloadBlob(blob, filename) {
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function guessExtFromUrl(url) {
+  const u = (url || "").toString();
+  const m = u.match(/\.([a-zA-Z0-9]+)(\?|#|$)/);
+  if (!m) return "webp";
+  return m[1].toLowerCase();
+}
+
+// 下載簽名並「轉成 PNG DataURL」（白底），避免 Excel 不支援 webp
+async function fetchImageAsPngDataUrl(imageUrl) {
+  const url = (imageUrl || "").toString().trim();
+  if (!url) return "";
+
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("簽名下載失敗");
+
+  const blob = await res.blob();
+  const bitmap = await createImageBitmap(blob);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+
+  const ctx = canvas.getContext("2d");
+  // 白底（避免透明在 Excel 變黑/怪色）
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bitmap, 0, 0);
+
+  return canvas.toDataURL("image/png");
+}
+
+// 產生「客戶習慣的表單版」Excel（接近你給的截圖那種）
+async function buildStyledWorkbook(record, signaturePngDataUrl) {
+  if (typeof ExcelJS === "undefined") throw new Error("ExcelJS 未載入");
+
+  const r = record || {};
+  const p = r.payload || {};
+
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Super Dog";
+
+  const ws = wb.addWorksheet("美容單", {
+    pageSetup: { orientation: "landscape", paperSize: 9 } // A4 橫向
+  });
+
+  // 欄寬：做成「表單格」
+  ws.columns = [
+    { width: 14 }, // A 標題
+    { width: 26 }, // B 值
+    { width: 14 }, // C 標題
+    { width: 26 }, // D 值
+    { width: 14 }, // E 標題
+    { width: 26 }, // F 值
+    { width: 14 }, // G 標題
+    { width: 26 }, // H 值
+  ];
+
+  const thinBorder = {
+    top: { style: "thin", color: { argb: "FF9CA3AF" } },
+    left: { style: "thin", color: { argb: "FF9CA3AF" } },
+    bottom: { style: "thin", color: { argb: "FF9CA3AF" } },
+    right: { style: "thin", color: { argb: "FF9CA3AF" } },
+  };
+
+  const secFill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFD9EAD3" } }; // 淺綠
+  const titleFill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFB6D7A8" } }; // 深一點綠
+  const labelFill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFF3F4F6" } }; // 淺灰
+
+  function setCell(addr, value, opts = {}) {
+    const c = ws.getCell(addr);
+    c.value = value ?? "";
+    c.border = thinBorder;
+    c.alignment = opts.alignment || { vertical: "middle", horizontal: "left", wrapText: true };
+    c.font = opts.font || { name: "Calibri", size: 11 };
+    if (opts.fill) c.fill = opts.fill;
+    return c;
+  }
+
+  function mergeAndSet(range, value, opts = {}) {
+    ws.mergeCells(range);
+    const start = range.split(":")[0];
+    const c = setCell(start, value, opts);
+    // 合併區塊全部加框線
+    const [s, e] = range.split(":");
+    const sCell = ws.getCell(s);
+    const eCell = ws.getCell(e);
+    for (let row = sCell.row; row <= eCell.row; row++) {
+      for (let col = sCell.col; col <= eCell.col; col++) {
+        ws.getCell(row, col).border = thinBorder;
+        if (opts.fill) ws.getCell(row, col).fill = opts.fill;
+      }
+    }
+    return c;
+  }
+
+  // ====== Title ======
+  mergeAndSet("A1:H1", "Super Dog 寵物美容｜美容服務紀錄", {
+    fill: titleFill,
+    alignment: { vertical: "middle", horizontal: "center" },
+    font: { name: "Calibri", size: 16, bold: true }
+  });
+  ws.getRow(1).height = 28;
+
+  // ====== 訂單資訊 ======
+  mergeAndSet("A2:H2", "訂單資訊", {
+    fill: secFill,
+    font: { name: "Calibri", size: 12, bold: true }
+  });
+
+  setCell("A3", "訂單ID", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B3:D3", r.id || "-", {});
+  setCell("E3", "狀態", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F3:H3", badgeText(r.status || "pending"), {});
+
+  setCell("A4", "建立時間", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B4:D4", fmtYMDHM(r.created_at), {});
+  setCell("E4", "更新時間", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F4:H4", fmtYMDHM(r.updated_at), {});
+
+  setCell("A5", "店內備註", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B5:H5", (r.admin_note || "").toString(), {});
+  ws.getRow(5).height = 36;
+
+  // ====== 飼主/毛孩 ======
+  mergeAndSet("A6:H6", "飼主 / 毛孩資料", {
+    fill: secFill,
+    font: { name: "Calibri", size: 12, bold: true }
+  });
+
+  setCell("A7", "飼主姓名", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B7:D7", (p.owner_name || "").toString(), {});
+  setCell("E7", "電話", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F7:H7", (r.phone || p.phone || "").toString(), {});
+
+  setCell("A8", "地址", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B8:H8", (p.address || "").toString(), {});
+  ws.getRow(8).height = 30;
+
+  setCell("A9", "毛孩名字", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B9:D9", (r.pet_name || p.pet_name || "").toString(), {});
+  setCell("E9", "種類", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F9:H9", petTypeText(p.pet_type), {});
+
+  setCell("A10", "品種", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B10:D10", (p.breed || "").toString(), {});
+  setCell("E10", "花色", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F10:H10", (p.color || "").toString(), {});
+
+  setCell("A11", "年齡", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B11:D11", (p.age ?? "").toString(), {});
+  setCell("E11", "性別", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F11:H11", (p.sex || "").toString(), {});
+
+  // ====== 服務/付款 ======
+  mergeAndSet("A12:H12", "服務 / 付款", {
+    fill: secFill,
+    font: { name: "Calibri", size: 12, bold: true }
+  });
+
+  const items = Array.isArray(p.service_items) ? p.service_items.map(TServiceItem).join("、") : "";
+  setCell("A13", "服務項目", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B13:H13", items, {});
+  ws.getRow(13).height = 28;
+
+  setCell("A14", "預計接回", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B14:D14", p.notify_later_pickup ? "另行通知" : (p.pickup_time || ""), {});
+  setCell("E14", "支付方式", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("F14:H14", paymentMethodText(p.payment_method, p.payment_other), {});
+
+  setCell("A15", "金額", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B15:D15", paymentAmountTextForAdmin(p), {});
+  setCell("E15", "簽署時間", { fill: labelFill, font: { bold: true } });
+  const sigIso = (p.signature_signed_at || "").toString().trim() || r.created_at;
+  mergeAndSet("F15:H15", fmtYMDHM(sigIso), {});
+
+  // ====== 簽名圖 ======
+  mergeAndSet("A16:H16", "簽名", { fill: secFill, font: { name: "Calibri", size: 12, bold: true } });
+
+  // 簽名連結（可點）
+  setCell("A17", "簽名連結", { fill: labelFill, font: { bold: true } });
+  mergeAndSet("B17:H17", (r.signature_url || "").toString(), {});
+  const linkCell = ws.getCell("B17");
+  if ((r.signature_url || "").toString()) {
+    linkCell.value = { text: (r.signature_url || "").toString(), hyperlink: (r.signature_url || "").toString() };
+    linkCell.font = { color: { argb: "FF1D4ED8" }, underline: true };
+  }
+
+  // 插入圖片（PNG）
+  if (signaturePngDataUrl) {
+    const imageId = wb.addImage({
+      base64: signaturePngDataUrl,
+      extension: "png"
+    });
+
+    // 放在 A18 開始的區域
+    ws.addImage(imageId, {
+      tl: { col: 0, row: 17 },   // A18（0-based col, row）
+      ext: { width: 520, height: 180 }
+    });
+
+    // 留出高度
+    ws.getRow(18).height = 28;
+    ws.getRow(19).height = 28;
+    ws.getRow(20).height = 28;
+    ws.getRow(21).height = 28;
+    ws.getRow(22).height = 28;
+    ws.getRow(23).height = 28;
+  }
+
+  // 全表格垂直置中
+  for (let i = 2; i <= 23; i++) {
+    ws.getRow(i).alignment = { vertical: "middle" };
+  }
+
+  return wb;
+}
+
+// ✅ 匯出：只下載 Excel（檔內直接嵌入簽名圖片，不打包 zip）
+async function exportRecordBundle(record) {
+  if (typeof ExcelJS === "undefined") throw new Error("ExcelJS 未載入");
+
+  const r = record || {};
+  const p = r.payload || {};
+
+  const petName = (r.pet_name || p.pet_name || "毛孩").toString();
+  const phone = (r.phone || p.phone || "").toString();
+  const timeText = fmtYMDHM(r.created_at).replaceAll("/", "").replaceAll(" ", "_").replaceAll(":", "");
+
+  const base = sanitizeFileName(`SuperDog_${petName}_${phone}_${timeText}`);
+  const excelName = `${base}.xlsx`;
+
+  let signaturePngDataUrl = "";
+  const sigUrl = (r.signature_url || "").toString().trim();
+
+  // 有簽名就抓下來轉 PNG，沒有就空白（Excel 仍可匯出）
+  if (sigUrl) {
+    signaturePngDataUrl = await fetchImageAsPngDataUrl(sigUrl);
+  }
+
+  // 建立含版型與簽名圖片的 Excel
+  const wb = await buildStyledWorkbook(r, signaturePngDataUrl);
+
+  // 寫成 xlsx buffer
+  const excelBuf = await wb.xlsx.writeBuffer();
+
+  // 下載 xlsx
+  const blob = new Blob([excelBuf], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+  downloadBlob(blob, excelName);
+}
+function buildExcelRowsForRecord(record) {
+  const r = record || {};
+  const p = r.payload || {};
+
+  const ownerName = (p.owner_name || "").toString();
+  const phone = (r.phone || p.phone || "").toString();
+  const petName = (r.pet_name || p.pet_name || "").toString();
+
+  const serviceItems = Array.isArray(p.service_items) ? p.service_items.map(TServiceItem).join("、") : "";
+  const petStatus = Array.isArray(p.pet_status) ? p.pet_status.join("、") : "";
+  const pickup = p.notify_later_pickup ? "另行通知" : (p.pickup_time || "");
+
+  const payMethod = paymentMethodText(p.payment_method, p.payment_other);
+  const payAmountText = paymentAmountTextForAdmin(p);
+
+  const signedAtIso = (p.signature_signed_at || "").toString().trim() || r.created_at;
+
+  return [
+    { "欄位": "訂單ID", "值": r.id || "-" },
+    { "欄位": "建立時間", "值": fmtYMDHM(r.created_at) },
+    { "欄位": "更新時間", "值": fmtYMDHM(r.updated_at) },
+    { "欄位": "狀態", "值": badgeText(r.status || "pending") },
+    { "欄位": "店內備註", "值": (r.admin_note || "").toString() },
+
+    { "欄位": "飼主姓名", "值": ownerName || "-" },
+    { "欄位": "電話", "值": phone || "-" },
+    { "欄位": "Email", "值": (p.email || "").toString() },
+    { "欄位": "身分證", "值": (p.id_no || "").toString() },
+    { "欄位": "地址", "值": (p.address || "").toString() },
+    { "欄位": "緊急聯絡人", "值": (p.emergency_contact || "").toString() },
+    { "欄位": "緊急電話", "值": (p.emergency_phone || "").toString() },
+    { "欄位": "指定醫院", "值": (p.hospital || "").toString() },
+
+    { "欄位": "寵物種類", "值": petTypeText(p.pet_type) },
+    { "欄位": "毛孩名字", "值": petName || "-" },
+    { "欄位": "品種", "值": (p.breed || "").toString() },
+    { "欄位": "花色", "值": (p.color || "").toString() },
+    { "欄位": "年齡", "值": (p.age ?? "").toString() },
+    { "欄位": "晶片狀態", "值": (p.chip_status || "").toString() },
+    { "欄位": "晶片號碼", "值": (p.chip_no || "").toString() },
+    { "欄位": "性別", "值": (p.sex || "").toString() },
+    { "欄位": "結紮", "值": (p.neuter || "").toString() },
+    { "欄位": "具攻擊性", "值": (p.aggressive || "").toString() },
+    { "欄位": "毛孩性格", "值": (p.social_type || "").toString() },
+    { "欄位": "其他狀況", "值": petStatus },
+    { "欄位": "病史(有/無)", "值": (p.medical_history_has || "").toString() },
+    { "欄位": "病史內容", "值": (p.medical_history_note || "").toString() },
+    { "欄位": "不喜歡碰觸", "值": (p.dislike_touch || "").toString() },
+    { "欄位": "備註", "值": (p.note || "").toString() },
+
+    { "欄位": "身體檢視-眼睛", "值": (p.check_eye || "").toString() },
+    { "欄位": "身體檢視-眼睛描述", "值": (p.check_eye_note || "").toString() },
+    { "欄位": "身體檢視-耳朵", "值": (p.check_ear || "").toString() },
+    { "欄位": "身體檢視-耳朵描述", "值": (p.check_ear_note || "").toString() },
+    { "欄位": "身體檢視-皮膚", "值": (p.check_skin || "").toString() },
+    { "欄位": "身體檢視-皮膚描述", "值": (p.check_skin_note || "").toString() },
+    { "欄位": "身體檢視-皮毛", "值": (p.check_fur || "").toString() },
+    { "欄位": "身體檢視-皮毛描述", "值": (p.check_fur_note || "").toString() },
+
+    { "欄位": "服務項目", "值": serviceItems },
+    { "欄位": "其他項目", "值": (p.other_service_text || "").toString() },
+    { "欄位": "預計接回", "值": pickup },
+
+    { "欄位": "支付方式", "值": payMethod },
+    { "欄位": "金額", "值": payAmountText },
+
+    { "欄位": "簽署時間", "值": fmtYMDHM(signedAtIso) },
+    { "欄位": "簽名圖片URL", "值": (r.signature_url || "").toString() },
+  ];
+}
+
+function exportRecordToExcel(record) {
+  if (typeof XLSX === "undefined") {
+    toast("Excel 匯出模組載入失敗（XLSX 未載入）");
+    return;
+  }
+
+  const r = record || {};
+  const p = r.payload || {};
+  const petName = (r.pet_name || p.pet_name || "毛孩").toString();
+  const phone = (r.phone || p.phone || "").toString();
+  const timeText = fmtYMDHM(r.created_at).replaceAll("/", "").replaceAll(" ", "_").replaceAll(":", "");
+
+  const filename = sanitizeFileName(`SuperDog_${petName}_${phone}_${timeText}.xlsx`);
+
+  // Sheet 1：欄位/值（好閱讀）
+  const rows = buildExcelRowsForRecord(r);
+  const ws1 = XLSX.utils.json_to_sheet(rows, { header: ["欄位", "值"] });
+  ws1["!cols"] = [{ wch: 22 }, { wch: 60 }];
+
+  // Sheet 2：payload 原始 JSON（好查資料）
+  const raw = [{ json: JSON.stringify(p || {}, null, 2) }];
+  const ws2 = XLSX.utils.json_to_sheet(raw, { header: ["json"] });
+  ws2["!cols"] = [{ wch: 120 }];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws1, "訂單內容");
+  XLSX.utils.book_append_sheet(wb, ws2, "payload_json");
+
+  XLSX.writeFile(wb, filename);
+}
 
     function isIncompleteStatus(status) {
       return !["completed", "cancelled"].includes(status || "pending");
@@ -1212,11 +1602,13 @@ function generateLineFinishMessage(payload) {
       $("detailService").innerHTML = serviceHtml;
 
       // payment
-      const payHtml = [
-        buildKV("支付方式", paymentMethodText(p.payment_method, p.payment_other)),
-        buildKV("金額", `$${getPaymentAmount(p)}`),
-      ].join("");
-      $("detailPayment").innerHTML = payHtml;
+const amountText = paymentAmountTextForAdmin(p);
+
+const payHtml = [
+  buildKV("支付方式", paymentMethodText(p.payment_method, p.payment_other)),
+  buildKV("金額", amountText),
+].join("");
+$("detailPayment").innerHTML = payHtml;
 
       // signature
       $("detailSignatureImg").src = r.signature_url || "";
@@ -1561,6 +1953,16 @@ syncFilterUI();
         toast("✅ 已複製到剪貼簿");
       });
 
+      $("btnExportExcel")?.addEventListener("click", async () => {
+  if (!selectedRecord) return toast("請先開啟一筆紀錄");
+  try {
+    await exportRecordBundle(selectedRecord);
+  } catch (e) {
+    console.error(e);
+    toast("匯出失敗：" + (e?.message || "請稍後再試"));
+  }
+});
+
       $("btnDelete").addEventListener("click", () => {
         if (!selectedRecord) return;
         if (!confirm("確定要刪除這筆紀錄？刪除後無法復原。")) return;
@@ -1600,7 +2002,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=5');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=6');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });

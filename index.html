@@ -118,7 +118,7 @@ input, select, textarea { font-size: 16px; }
     <header class="sticky top-0 z-40 bg-sd-bg/90 backdrop-blur border-b border-sd-mint/10 shadow-soft">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/20 bg-white flex items-center justify-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-sd-mint/30 bg-sd-mint/15 ring-2 ring-sd-mint/10 flex items-center justify-center">
                     <img src="https://ncrkevxnmplvivletkts.supabase.co/storage/v1/object/public/logo/logo.png" alt="Superdog Logo" class="w-full h-full object-cover">
                 </div>
                 <div class="leading-tight">
@@ -611,11 +611,18 @@ input, select, textarea { font-size: 16px; }
 
         <div>
             <label class="block text-sm font-bold text-sd-sub mb-2">支付金額 <span class="text-sd-peach">*</span></label>
+
+            <label class="flex items-center gap-2 text-sm font-bold text-sd-sub mb-2">
+                <input type="checkbox" id="onSiteQuoteCheck" class="w-4 h-4 accent-sd-mint">
+                現場評估報價（不需先填金額）
+            </label>
+
             <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sd-sub font-black">$NT</span>
                 <input type="number" id="paymentAmount" min="0" placeholder="輸入金額" class="w-full pl-14 pr-12 py-3 rounded-2xl border border-sd-mint/20 bg-sd-bg text-sd-text font-black focus:ring-2 focus:ring-sd-mint focus:border-sd-mint outline-none transition-all">
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sd-sub font-black">元</span>
             </div>
+
             <p class="text-xs text-sd-peach font-bold mt-2">
                 此金額為基礎報價，若現場發現嚴重打結、寄生蟲等狀況，將另行告知加價。
             </p>
@@ -753,7 +760,7 @@ input, select, textarea { font-size: 16px; }
       <button id="btnOpenFullContract" type="button"
         class="btn-jelly w-full bg-sd-mint text-white font-black text-base py-4 rounded-cute shadow-jelly flex items-center justify-center gap-2">
         <i data-lucide="camera" class="w-5 h-5"></i>
-        開啟完整契約（截圖保存）
+        跳到契約副本（截圖保存）
       </button>
 
       <button id="btnBackHomeFromSuccess" type="button"
@@ -764,12 +771,14 @@ input, select, textarea { font-size: 16px; }
     </div>
   </div>
 
-  <!-- ✅ 剛填寫的內容 -->
-  <div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
-    <div class="flex items-center gap-2 mb-4">
-      <i data-lucide="clipboard-list" class="w-5 h-5 text-sd-mint"></i>
-      <h3 class="font-black text-sd-text">本次填寫內容</h3>
-    </div>
+  <!-- ✅ 契約副本（同頁截圖保存用） -->
+  <div id="contractCopySection" class="space-y-5 scroll-mt-20">
+    <!-- ✅ 剛填寫的內容 -->
+    <div class="rounded-cute bg-white border border-sd-mint/15 p-6 shadow-soft">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="clipboard-list" class="w-5 h-5 text-sd-mint"></i>
+        <h3 class="font-black text-sd-text">本次填寫內容</h3>
+      </div>
 
     <div class="grid md:grid-cols-2 gap-4">
       <div class="rounded-2xl border border-sd-mint/10 p-4">
@@ -885,6 +894,7 @@ input, select, textarea { font-size: 16px; }
 
     <div id="successTerms" class="text-sm text-sd-sub font-bold leading-relaxed space-y-2"></div>
   </div>
+</div>
 </section>
 </main>
 
@@ -1477,9 +1487,19 @@ if (otherChecked && !otherText) {
         if (!v) markInputError(paymentOtherEl, '其他支付方式：已選「其他」需必填');
     }
 
-    const amount = parseInt(paymentAmountEl?.value || '0', 10);
-    if (!Number.isFinite(amount) || amount <= 0) {
-        markInputError(paymentAmountEl, '支付金額：必填且需大於 0');
+    const onSiteQuote = !!document.getElementById('onSiteQuoteCheck')?.checked;
+
+    if (onSiteQuote) {
+        // 現場評估：金額固定為 0，並不做 >0 驗證
+        if (paymentAmountEl) {
+            paymentAmountEl.value = '0';
+            setFieldError(paymentAmountEl, false);
+        }
+    } else {
+        const amount = parseInt(paymentAmountEl?.value || '0', 10);
+        if (!Number.isFinite(amount) || amount <= 0) {
+            markInputError(paymentAmountEl, '支付金額：必填且需大於 0');
+        }
     }
 
     // =========================
@@ -1723,7 +1743,7 @@ async function submitAgreement() {
             await sendContractEmail(payload, signatureUrl);
         } catch (e) {
             console.error(e);
-            alert("⚠️ 資料已成功送出，但 Email 寄送失敗，請點「開啟完整契約」截圖保存。");
+            alert("⚠️ 資料已成功送出，但 Email 寄送失敗，請點「跳到契約副本（截圖保存）」並截圖保存。");
         }
 
     } catch (err) {
@@ -1797,7 +1817,7 @@ function showSuccessView(payload, signatureUrl) {
         <div class="flex items-center gap-2 font-black text-sd-mint mb-1">
           <i data-lucide="mail" class="w-4 h-4"></i> 已填寫 Email
         </div>
-        若你有需要留存，可點擊「開啟完整契約」並截圖保存。
+        若你有需要留存，可點擊「跳到契約副本（截圖保存）」並截圖保存。
       `;
     }
   } else {
@@ -1812,7 +1832,7 @@ function showSuccessView(payload, signatureUrl) {
           <i data-lucide="alert-circle" class="w-4 h-4"></i> 未填寫 Email
         </div>
         你未填寫 Email，因此不會收到電子副本。<br>
-        請務必點擊「開啟完整契約」並截圖保存！
+        請務必點擊「跳到契約副本（截圖保存）」並截圖保存！
       `;
     }
   }
@@ -1867,9 +1887,16 @@ serviceKV.innerHTML = [
   }
 
   if (paymentKV) {
+    const amt = __lastSuccessPayload.payment_amount;
+
+    const amountText =
+      (amt === 0 || amt === "0")
+        ? "現場評估報價"
+        : (amt ? `$${amt}` : "-");
+
     paymentKV.innerHTML = [
       buildKVLine("支付方式", __lastSuccessPayload.payment_method === "其他" ? (__lastSuccessPayload.payment_other || "其他") : (__lastSuccessPayload.payment_method || "-")),
-      buildKVLine("金額", __lastSuccessPayload.payment_amount ? `$${__lastSuccessPayload.payment_amount}` : "-"),
+      buildKVLine("金額", amountText),
     ].join("");
   }
 
@@ -1883,14 +1910,32 @@ serviceKV.innerHTML = [
   const termsEl = document.getElementById("successTerms");
   if (termsEl) termsEl.innerHTML = __lastSuccessTermsHtml;
 
-  // 綁按鈕
-  document.getElementById("btnBackHomeFromSuccess")?.addEventListener("click", () => {
-    router("home");
-  });
+  // 綁按鈕（用 onclick 避免重複綁定）
+  const backBtn = document.getElementById("btnBackHomeFromSuccess");
+  if (backBtn) {
+    backBtn.onclick = () => {
+      router("home");
+    };
+  }
 
-  document.getElementById("btnOpenFullContract")?.addEventListener("click", () => {
-    openFullContractWindow();
-  });
+  const openCopyBtn = document.getElementById("btnOpenFullContract");
+  if (openCopyBtn) {
+    openCopyBtn.onclick = () => {
+      const target = document.getElementById("contractCopySection");
+      if (!target) {
+        alert("找不到契約副本區塊（contractCopySection）");
+        return;
+      }
+
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // 短暫高亮，讓客戶知道跳到哪
+      target.classList.add("ring-2", "ring-sd-yellow", "ring-offset-2", "ring-offset-white", "rounded-cute");
+      window.setTimeout(() => {
+        target.classList.remove("ring-2", "ring-sd-yellow", "ring-offset-2", "ring-offset-white", "rounded-cute");
+      }, 1200);
+    };
+  }
 
   lucide.createIcons();
   router("success");
@@ -2134,7 +2179,7 @@ function buildFullContractHtml(payload, signatureUrl, termsHtml) {
             <div class="secTitle">付款與簽名</div>
             <table class="kv">
               <tr><td class="k">支付方式</td><td class="v">${esc(payMethodText) || "—"}</td></tr>
-              <tr><td class="k">金額</td><td class="v">${p.payment_amount ? "$" + esc(p.payment_amount) : "—"}</td></tr>
+              <tr><td class="k">金額</td><td class="v">${(p.payment_amount === 0 || p.payment_amount === "0") ? "現場評估報價" : (p.payment_amount ? "$" + esc(p.payment_amount) : "—")}</td></tr>
             </table>
 
             <div class="sigWrap">
@@ -2439,6 +2484,29 @@ function initFormEnhancements() {
         syncPaymentOther();
     }
 
+        // ✅ 現場評估報價：勾選後金額固定 0 並鎖住
+    const onSiteQuoteCheck = document.getElementById('onSiteQuoteCheck');
+    const paymentAmount = document.getElementById('paymentAmount');
+
+    if (onSiteQuoteCheck && paymentAmount) {
+        const syncOnSiteQuote = () => {
+            if (onSiteQuoteCheck.checked) {
+                paymentAmount.value = '0';
+                paymentAmount.disabled = true;
+                paymentAmount.placeholder = '現場評估報價';
+                paymentAmount.classList.add('opacity-50');
+            } else {
+                paymentAmount.disabled = false;
+                paymentAmount.placeholder = '輸入金額';
+                paymentAmount.classList.remove('opacity-50');
+                if (paymentAmount.value === '0') paymentAmount.value = '';
+            }
+        };
+
+        onSiteQuoteCheck.addEventListener('change', syncOnSiteQuote);
+        syncOnSiteQuote();
+    }
+
     // 過往病史輸入框控制
     const medicalYes = document.getElementById('medicalYes');
     const medicalNo = document.getElementById('medicalNo');
@@ -2735,7 +2803,7 @@ window.addEventListener('DOMContentLoaded', init);
 
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=5');
+            const reg = await navigator.serviceWorker.register('./sw.js?v=6');
 
             if (reg.waiting) {
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
