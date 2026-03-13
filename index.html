@@ -1189,6 +1189,52 @@ function init() {
 }
 
 window.addEventListener('DOMContentLoaded', init);
+// ✅ Service Worker：自動更新 + 更新後自動刷新（避免客戶看到舊版）
+(function registerAutoUpdateSW() {
+    if (!('serviceWorker' in navigator)) return;
+
+    let refreshing = false;
+
+    // SW 一旦切換成新控制者，直接刷新頁面載入最新版
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+    });
+
+    window.addEventListener('load', async () => {
+        try {
+            const reg = await navigator.serviceWorker.register('./sw.js?v=1');
+
+            if (reg.waiting) {
+                reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
+
+            // 監聽更新：一旦找到新 SW，安裝完成後就直接啟用
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                if (!newWorker) return;
+
+                newWorker.addEventListener('statechange', () => {
+                    // 新 SW 安裝完成，且目前有舊 SW 在控制頁面 => 叫新 SW 立刻啟用
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                });
+            });
+
+            // ✅ 週期性檢查更新（例如每 10 分鐘）
+            setInterval(() => reg.update(), 10 * 60 * 1000);
+
+            // ✅ 使用者切回分頁時也檢查一次
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') reg.update();
+            });
+        } catch (err) {
+            console.warn('Service Worker 註冊失敗：', err);
+        }
+    });
+})();
 </script>
 
 <!-- 全螢幕簽名 Modal -->
