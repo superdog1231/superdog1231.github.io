@@ -330,7 +330,7 @@ input, select, textarea { font-size: 16px; }
     <div class="shrink-0 flex items-center gap-2">
       <button id="btnCopyLine"
         class="btn-jelly px-3 py-2 rounded-xl bg-sd-mint text-white font-black text-xs flex items-center gap-2">
-        <i data-lucide="copy" class="w-4 h-4"></i> 複製完工通知
+        <i data-lucide="copy" class="w-4 h-4"></i> 美容完成
       </button>
 
       <button id="btnExportExcel"
@@ -489,7 +489,7 @@ input, select, textarea { font-size: 16px; }
           <div class="rounded-2xl border border-sd-mint/10 bg-sd-bg p-4">
             <div class="flex items-center justify-between mb-2">
               <div class="font-black text-sd-text">LINE 預覽</div>
-              <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-white border border-sd-mint/10 text-sd-sub">preview</span>
+              <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-white border border-sd-mint/10 text-sd-sub">預覽</span>
             </div>
 
             <pre id="finishPreview" class="whitespace-pre-wrap text-sm font-bold text-sd-text leading-6"></pre>
@@ -1612,7 +1612,7 @@ function generateLineFinishMessage(payload) {
   return `【美容完成通知】
 ${pet}已洗香香完成囉！
 今日美容整體狀況如下：
-特別提醒的部分為：
+特別提醒：
 
 請於營業時間前接回，逾時一小時以上 
 將酌收100元逾時費喔！`;
@@ -1637,15 +1637,20 @@ function buildFinishMessage(payload, opts) {
   lines.push(`${pet}已洗香香完成囉！`);
   lines.push("");
 
+  // 今日美容整體狀況（保留原本邏輯：標題固定顯示；有填才列出內容）
   lines.push("今日美容整體狀況如下：");
   if (overall) lines.push(`- 整體狀況：${overall}`);
   if (skin) lines.push(`- 皮膚／外觀狀況：${skin}`);
   if (fee) lines.push(`- 費用明細：${fee}`);
   lines.push("");
 
-  lines.push("特別提醒的部分為：");
-  if (extra) lines.push(extra);
-  lines.push("");
+  // ✅ 特別提醒：有輸入才顯示（包含標題那行）
+  if (extra) {
+    lines.push("特別提醒的部分為：");
+    lines.push(extra);
+    lines.push("");
+  }
+
   lines.push(reminder);
 
   return lines.join("\n");
