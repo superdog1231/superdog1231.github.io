@@ -324,7 +324,6 @@ input, select, textarea { font-size: 16px; }
   <!-- Header（你移上去的複製按鈕在這） -->
   <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between gap-3">
     <div class="min-w-0">
-      <div class="text-xs font-black text-sd-sub">服務紀錄詳情</div>
       <div id="detailTitle" class="font-black text-sd-text truncate"></div>
     </div>
 
@@ -436,7 +435,78 @@ input, select, textarea { font-size: 16px; }
 </div>   
 
     </div>  
-  </div>    
+  </div>  
+  
+    <!-- Finish Message Generator Modal -->
+  <div id="finishMsgModal" class="fixed inset-0 z-[110] hidden">
+    <div id="finishMsgBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-xl bg-white rounded-cute shadow-jelly border border-sd-mint/20 overflow-hidden flex flex-col max-h-[92vh]">
+        <!-- Header -->
+        <div class="p-4 bg-sd-bg border-b border-sd-mint/10 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-xs font-black text-sd-sub">訊息產生器</div>
+            <div class="font-black text-sd-text truncate">完工通知預覽</div>
+          </div>
+
+          <button id="btnCloseFinishMsg" class="btn-jelly w-10 h-10 rounded-full bg-white border border-sd-mint/15 flex items-center justify-center text-sd-sub">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
+          <div class="space-y-2">
+            <label class="block text-xs font-black text-sd-sub">整體狀況</label>
+            <textarea id="finishOverall" rows="2"
+              class="w-full px-4 py-3 rounded-2xl border border-sd-mint/15 bg-white outline-none font-bold text-sm"
+              placeholder="例如：精神食慾良好，狀況穩定。"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-xs font-black text-sd-sub">皮膚／外觀狀況</label>
+            <textarea id="finishSkin" rows="2"
+              class="w-full px-4 py-3 rounded-2xl border border-sd-mint/15 bg-white outline-none font-bold text-sm"
+              placeholder="例如：皮膚檢查無明顯異常。"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-xs font-black text-sd-sub">特別提醒</label>
+            <textarea id="finishExtra" rows="3"
+              class="w-full px-4 py-3 rounded-2xl border border-sd-mint/15 bg-white outline-none font-bold text-sm"
+              placeholder="例如：耳朵較敏感，回家後先避免搔抓。"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-xs font-black text-sd-sub">費用明細（可改）</label>
+            <input id="finishFee" type="text"
+              class="w-full px-4 py-3 rounded-2xl border border-sd-mint/15 bg-white outline-none font-bold text-sm"
+              placeholder="例如：本次消費總計：$1600">
+          </div>
+
+          <!-- Preview -->
+          <div class="rounded-2xl border border-sd-mint/10 bg-sd-bg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <div class="font-black text-sd-text">LINE 預覽</div>
+              <span class="text-[11px] font-black px-2.5 py-1 rounded-full bg-white border border-sd-mint/10 text-sd-sub">preview</span>
+            </div>
+
+            <pre id="finishPreview" class="whitespace-pre-wrap text-sm font-bold text-sd-text leading-6"></pre>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 border-t border-sd-mint/10 bg-white">
+          <button id="btnCopyFinishMsg"
+            class="btn-jelly w-full bg-[#5F7F6B] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2">
+            <i data-lucide="copy" class="w-5 h-5"></i> 複製通知
+          </button>
+          <div class="text-[10px] text-sd-sub font-bold text-center mt-2">提示：內容會即時更新預覽，確認後再複製</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Change Password Modal（只有店長可開） -->
 <div id="pwdModal" class="fixed inset-0 z-[125] hidden">
@@ -1539,9 +1609,103 @@ try {
 }
 function generateLineFinishMessage(payload) {
   const pet = payload?.pet_name || "毛孩";
-  return `【美容完成通知】\n${pet} 已洗香香完成囉！請於營業時間前接回，逾時將依安親費計費，有任何問題都歡迎詢問～`;
+  return `【美容完成通知】
+${pet}已洗香香完成囉！
+今日美容整體狀況如下：
+特別提醒的部分為：
+
+請於營業時間前接回，逾時一小時以上 
+將酌收100元逾時費喔！`;
 }
 
+// =========================
+// Finish Message Generator
+// =========================
+function buildFinishMessage(payload, opts) {
+  const pet = payload?.pet_name || "毛孩";
+
+  const overall = (opts?.overall ?? "").toString().trim();
+  const skin = (opts?.skin ?? "").toString().trim();
+  const extra = (opts?.extra ?? "").toString().trim();
+  const fee = (opts?.fee ?? "").toString().trim();
+
+  const reminder = `請於營業時間前接回，逾時一小時以上 
+將酌收100元逾時費喔！`;
+
+  const lines = [];
+  lines.push("【美容完成通知】");
+  lines.push(`${pet}已洗香香完成囉！`);
+  lines.push("");
+
+  lines.push("今日美容整體狀況如下：");
+  if (overall) lines.push(`- 整體狀況：${overall}`);
+  if (skin) lines.push(`- 皮膚／外觀狀況：${skin}`);
+  if (fee) lines.push(`- 費用明細：${fee}`);
+  lines.push("");
+
+  lines.push("特別提醒的部分為：");
+  if (extra) lines.push(extra);
+  lines.push("");
+  lines.push(reminder);
+
+  return lines.join("\n");
+}
+
+function setFinishPreviewFromInputs() {
+  if (!selectedRecord) return;
+
+  const p = selectedRecord.payload || {};
+  const overall = ($("finishOverall")?.value || "").toString();
+  const skin = ($("finishSkin")?.value || "").toString();
+  const extra = ($("finishExtra")?.value || "").toString();
+  const fee = ($("finishFee")?.value || "").toString();
+
+  const msg = buildFinishMessage(p, { overall, skin, extra, fee });
+
+  const pre = $("finishPreview");
+  if (pre) pre.textContent = msg;
+}
+
+function openFinishMsgModal() {
+  if (!selectedRecord) return toast("請先開啟一筆紀錄");
+
+  const p = selectedRecord.payload || {};
+  const amountText = paymentAmountTextForAdmin(p); // 例如 $1600 或 現場評估報價
+
+  // 讀取你上次輸入的內容（同一台裝置瀏覽器保留）
+  const lastOverall = localStorage.getItem("sd_finish_overall") || "";
+  const lastSkin = localStorage.getItem("sd_finish_skin") || "";
+  const lastExtra = localStorage.getItem("sd_finish_extra") || "";
+
+  $("finishOverall").value = lastOverall;
+  $("finishSkin").value = lastSkin;
+  $("finishExtra").value = lastExtra;
+
+  // 預設帶入費用（你也可以改）
+  $("finishFee").value = `本次消費總計：${amountText}`;
+
+  setFinishPreviewFromInputs();
+  openModal("finishMsgModal");
+  $("finishOverall")?.focus();
+}
+
+function closeFinishMsgModal() {
+  closeModal("finishMsgModal");
+}
+
+async function copyFinishMsgFromPreview() {
+  const msg = ($("finishPreview")?.textContent || "").toString();
+  if (!msg.trim()) return toast("沒有可複製的內容");
+
+  // 存你最後一次輸入（下次直接帶入）
+  localStorage.setItem("sd_finish_overall", ($("finishOverall")?.value || "").toString());
+  localStorage.setItem("sd_finish_skin", ($("finishSkin")?.value || "").toString());
+  localStorage.setItem("sd_finish_extra", ($("finishExtra")?.value || "").toString());
+
+  await navigator.clipboard.writeText(msg);
+  toast("✅ 已複製到剪貼簿");
+  closeFinishMsgModal();
+}
 
     async function openDetail(recordId) {
       const r = records.find(x => x.id === recordId);
@@ -1934,6 +2098,16 @@ syncFilterUI();
       // detail modal
       $("btnCloseDetail").addEventListener("click", () => closeModal("detailModal"));
 
+// finish message modal
+$("btnCloseFinishMsg")?.addEventListener("click", closeFinishMsgModal);
+$("finishMsgBackdrop")?.addEventListener("click", closeFinishMsgModal);
+
+["finishOverall", "finishSkin", "finishExtra", "finishFee"].forEach(id => {
+  $(id)?.addEventListener("input", setFinishPreviewFromInputs);
+});
+
+$("btnCopyFinishMsg")?.addEventListener("click", copyFinishMsgFromPreview);
+
       // status buttons
       document.querySelectorAll('[data-status]').forEach(btn => {
         btn.addEventListener("click", () => updateStatus(btn.getAttribute("data-status")));
@@ -1946,12 +2120,9 @@ syncFilterUI();
       });
 
       // actions
-      $("btnCopyLine").addEventListener("click", async () => {
-        if (!selectedRecord) return;
-        const msg = generateLineFinishMessage(selectedRecord.payload || {});
-        await navigator.clipboard.writeText(msg);
-        toast("✅ 已複製到剪貼簿");
-      });
+$("btnCopyLine").addEventListener("click", () => {
+  openFinishMsgModal();
+});
 
       $("btnExportExcel")?.addEventListener("click", async () => {
   if (!selectedRecord) return toast("請先開啟一筆紀錄");
@@ -2002,7 +2173,7 @@ syncFilterUI();
   window.addEventListener('load', async () => {
     try {
       // 建議用 /sw.js 確保 scope 在根目錄（index/admin 共用）
-      const reg = await navigator.serviceWorker.register('/sw.js?v=6');
+      const reg = await navigator.serviceWorker.register('/sw.js?v=7');
 
       if (reg.waiting) {
         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
